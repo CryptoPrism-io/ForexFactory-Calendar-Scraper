@@ -1,0 +1,19 @@
+storage:
+  out_dir: outputs
+  db_path: outputs/ff_calendar.sqlite
+
+scrape:
+  headless: true
+  use_uc_fallback: true
+  page_wait_seconds: 40
+  delay_seconds: 1
+  # If Chrome isn't auto-detected, set this:
+  # chrome_binary: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+
+calendar:
+  timezone: America/New_York
+  currencies: [USD, EUR, GBP, JPY, AUD, NZD, CAD, CHF]
+  impacts: [high, medium, low]
+
+window:
+  mode: "current_week"
