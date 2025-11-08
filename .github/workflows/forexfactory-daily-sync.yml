@@ -71,15 +71,3 @@ jobs:
           name: daily-sync-logs-${{ github.run_number }}
           path: scraper_2.2/daily_sync.log
           retention-days: 7
-
-      - name: Notify on failure
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '❌ ForexFactory daily sync job failed. Check workflow logs.'
-            })

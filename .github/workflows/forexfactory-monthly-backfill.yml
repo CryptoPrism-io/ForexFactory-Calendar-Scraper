@@ -79,28 +79,3 @@ jobs:
           name: monthly-backfill-logs-${{ github.run_number }}
           path: scraper_2.2/monthly_backfill.log
           retention-days: 30
-
-      - name: Create deployment status
-        if: success()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.repos.createDeploymentStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              deployment_id: context.payload.deployment.id,
-              state: 'success',
-              environment_url: 'https://github.com'
-            })
-
-      - name: Notify on failure
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '❌ ForexFactory monthly backfill job failed. Check workflow logs.'
-            })
