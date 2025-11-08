@@ -6,9 +6,15 @@ WORKDIR /app
 
 # Install system dependencies (Chromium + required libs)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    chromium-browser \
-    chromium-chromedriver \
+    chromium \
+    chromium-driver \
     ca-certificates \
+    fonts-liberation \
+    libappindicator3-1 \
+    libnss3 \
+    lsb-release \
+    wget \
+    xdg-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python dependencies
