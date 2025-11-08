@@ -1,8 +1,0 @@
-beautifulsoup4>=4.12.3
-requests>=2.32.3
-pytz>=2024.1
-python-dateutil>=2.9.0.post0
-pandas>=2.2.2
-sqlite-utils>=3.36
-tenacity>=8.3.0
-PyYAML>=6.0.2

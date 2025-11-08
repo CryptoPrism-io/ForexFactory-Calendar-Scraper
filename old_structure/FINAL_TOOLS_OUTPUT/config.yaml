@@ -1,0 +1,76 @@
+# ForexFactory Automation Configuration
+# Database credentials are loaded from environment variables (.env file)
+# The scripts will use POSTGRES_* environment variables
+
+database:
+  # These will be overridden by environment variables from .env file
+  host: 34.55.195.199
+  port: 5432
+  database: dbcp
+  user: yogass09
+  password: jaimaakamakhya
+  pool_size: 5
+
+scraper:
+  # Monthly updater: fetch next N months
+  monthly_months_ahead: 3
+
+  # Daily sync: fetch past N days and next N days
+  daily_days_back: 3
+  daily_days_forward: 7
+
+  # Browser settings
+  headless: true
+  browser_timeout: 30  # seconds
+  page_load_wait: 3    # seconds
+  cloudflare_wait: 5   # seconds for Cloudflare challenge
+  request_delay: 2     # seconds between requests
+  request_delay_long: 5  # seconds delay every N requests
+  request_delay_interval: 5  # every N requests add long delay
+
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "automation.log"
+
+notifications:
+  enabled: false
+  # Uncomment to enable Slack/email
+  # slack_webhook: ${SLACK_WEBHOOK_URL}
+  # email_to: ${EMAIL_TO}
+
+forexfactory:
+  base_url: "https://www.forexfactory.com/calendar"
+  impact_keywords:
+    high:
+      - fomc
+      - fed
+      - ecb
+      - boe
+      - boj
+      - rba
+      - boc
+      - nonfarm payroll
+      - employment change
+      - jobless claims
+      - unemployment
+      - gdp
+      - cpi
+      - ppi
+      - inflation
+    medium:
+      - pmi
+      - ism
+      - factory orders
+      - durable goods
+      - consumer confidence
+      - retail sales
+      - building permits
+    low:
+      - speaks
+      - speech
+      - holiday
+      - daylight saving
+      - sentiment
+      - survey
+      - preliminary

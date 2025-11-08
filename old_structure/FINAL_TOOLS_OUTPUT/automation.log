@@ -1,0 +1,516 @@
+2025-11-08 17:34:14,728 - __main__ - INFO - ======================================================================
+2025-11-08 17:34:14,728 - __main__ - INFO - DAILY SYNC (CSV): Fetch last 3 + next 7 days, reconcile with existing
+2025-11-08 17:34:14,728 - __main__ - INFO - ======================================================================
+2025-11-08 17:34:14,728 - __main__ - INFO - Syncing data from 2025-11-05 to 2025-11-15
+2025-11-08 17:34:14,728 - __main__ - INFO - Scraping new data...
+2025-11-08 17:34:14,728 - scraper_core - INFO - Scraping from 2025-11-05 to 2025-11-15
+2025-11-08 17:34:15,570 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:34:31,500 - scraper_core - INFO - Scraped 39 events for 2025-11-05
+2025-11-08 17:34:34,542 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:34:50,142 - scraper_core - INFO - Scraped 39 events for 2025-11-06
+2025-11-08 17:34:53,182 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:35:10,074 - scraper_core - INFO - Scraped 39 events for 2025-11-07
+2025-11-08 17:35:13,126 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:35:30,025 - scraper_core - INFO - Scraped 39 events for 2025-11-08
+2025-11-08 17:35:33,048 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:35:49,394 - scraper_core - INFO - Scraped 39 events for 2025-11-09
+2025-11-08 17:35:49,694 - scraper_core - INFO - Pausing after 5 requests...
+2025-11-08 17:35:55,418 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:36:11,944 - scraper_core - INFO - Scraped 39 events for 2025-11-10
+2025-11-08 17:36:15,042 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:36:32,375 - scraper_core - INFO - Scraped 39 events for 2025-11-11
+2025-11-08 17:36:35,426 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:36:51,124 - scraper_core - INFO - Scraped 39 events for 2025-11-12
+2025-11-08 17:36:54,485 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:37:10,339 - scraper_core - INFO - Scraped 39 events for 2025-11-13
+2025-11-08 17:37:13,387 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:37:30,082 - scraper_core - INFO - Scraped 39 events for 2025-11-14
+2025-11-08 17:37:30,386 - scraper_core - INFO - Pausing after 10 requests...
+2025-11-08 17:37:36,120 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:37:52,356 - scraper_core - INFO - Scraped 39 events for 2025-11-15
+2025-11-08 17:37:54,679 - scraper_core - INFO - Scraping complete: 429 total events scraped
+2025-11-08 17:37:54,725 - __main__ - INFO - Scraped 429 events
+2025-11-08 17:37:54,726 - __main__ - INFO - Adding impact classification...
+2025-11-08 17:37:54,733 - __main__ - INFO - Loading existing data...
+2025-11-08 17:37:54,751 - __main__ - INFO - Found 2067 existing events
+2025-11-08 17:37:54,751 - __main__ - INFO - Reconciling data...
+2025-11-08 17:37:54,751 - data_reconciliation - INFO - Starting full reconciliation...
+2025-11-08 17:37:54,751 - data_reconciliation - INFO - Finding new events: 429 new vs 2067 existing
+2025-11-08 17:37:54,753 - __main__ - ERROR - Fatal error: time data "5:30am" doesn't match format "%Y-%m-%d", at position 1. You might want to try:
+    - passing `format` if your strings have a consistent format;
+    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+Traceback (most recent call last):
+  File "C:\cpio_db\PoC\dummy\News-Calendar\FINAL_TOOLS_OUTPUT\daily_sync_csv.py", line 83, in main
+    df_new_events, df_updates, summary = DataReconciler.reconcile(df_new, df_existing)
+                                         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\cpio_db\PoC\dummy\News-Calendar\FINAL_TOOLS_OUTPUT\data_reconciliation.py", line 198, in reconcile
+    df_new_events = DataReconciler.find_new_events(df_new, df_existing)
+  File "C:\cpio_db\PoC\dummy\News-Calendar\FINAL_TOOLS_OUTPUT\data_reconciliation.py", line 85, in find_new_events
+    df_new = DataReconciler.normalize_dataframe(df_new)
+  File "C:\cpio_db\PoC\dummy\News-Calendar\FINAL_TOOLS_OUTPUT\data_reconciliation.py", line 37, in normalize_dataframe
+    df['Date'] = pd.to_datetime(df['Date']).dt.date
+                 ~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\44776\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\tools\datetimes.py", line 1068, in to_datetime
+    cache_array = _maybe_cache(arg, format, cache, convert_listlike)
+  File "C:\Users\44776\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\tools\datetimes.py", line 249, in _maybe_cache
+    cache_dates = convert_listlike(unique_dates, format)
+  File "C:\Users\44776\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\tools\datetimes.py", line 435, in _convert_listlike_datetimes
+    return _array_strptime_with_fallback(arg, name, utc, format, exact, errors)
+  File "C:\Users\44776\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\core\tools\datetimes.py", line 469, in _array_strptime_with_fallback
+    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+                     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/tslibs/strptime.pyx", line 501, in pandas._libs.tslibs.strptime.array_strptime
+  File "pandas/_libs/tslibs/strptime.pyx", line 451, in pandas._libs.tslibs.strptime.array_strptime
+  File "pandas/_libs/tslibs/strptime.pyx", line 583, in pandas._libs.tslibs.strptime._parse_with_format
+ValueError: time data "5:30am" doesn't match format "%Y-%m-%d", at position 1. You might want to try:
+    - passing `format` if your strings have a consistent format;
+    - passing `format='ISO8601'` if your strings are all ISO8601 but not necessarily in exactly the same format;
+    - passing `format='mixed'`, and the format will be inferred for each element individually. You might want to use `dayfirst` alongside this.
+2025-11-08 17:54:04,855 - __main__ - INFO - ======================================================================
+2025-11-08 17:54:04,855 - __main__ - INFO - DAILY SYNC (CSV): Fetch last 3 + next 7 days, reconcile with existing
+2025-11-08 17:54:04,855 - __main__ - INFO - ======================================================================
+2025-11-08 17:54:04,856 - __main__ - INFO - Syncing data from 2025-11-05 to 2025-11-15
+2025-11-08 17:54:04,856 - __main__ - INFO - Scraping new data...
+2025-11-08 17:54:04,856 - scraper_core - INFO - Scraping from 2025-11-05 to 2025-11-15
+2025-11-08 17:54:05,791 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:54:21,204 - scraper_core - INFO - Scraped 39 events for 2025-11-05
+2025-11-08 17:54:24,355 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:54:39,840 - scraper_core - INFO - Scraped 39 events for 2025-11-06
+2025-11-08 17:54:42,969 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:54:58,564 - scraper_core - INFO - Scraped 39 events for 2025-11-07
+2025-11-08 17:55:01,601 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:55:08,446 - __main__ - INFO - ======================================================================
+2025-11-08 17:55:08,447 - __main__ - INFO - DAILY SYNC (CSV): Fetch last 3 + next 7 days, reconcile with existing
+2025-11-08 17:55:08,447 - __main__ - INFO - ======================================================================
+2025-11-08 17:55:08,447 - __main__ - INFO - Syncing data from 2025-11-05 to 2025-11-15
+2025-11-08 17:55:08,447 - __main__ - INFO - Scraping new data...
+2025-11-08 17:55:08,447 - scraper_core - INFO - Scraping from 2025-11-05 to 2025-11-15
+2025-11-08 17:55:18,015 - scraper_core - INFO - Scraped 39 events for 2025-11-08
+2025-11-08 17:55:19,919 - scraper_core - INFO - Scraped 39 events for 2025-11-05
+2025-11-08 17:55:21,316 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:55:25,580 - scraper_core - ERROR - Error scraping 2025-11-06: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0x7058d3
+	0x705914
+	0x51e76d
+	0x4fc32d
+	0x5932ee
+	0x5ae799
+	0x58c766
+	0x55dac0
+	0x55ede4
+	0x987974
+	0x982bea
+	0x72e5c4
+	0x71dd38
+	0x724d9d
+	0x70dee8
+	0x70e0ac
+	0x6f7d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+
+2025-11-08 17:55:36,428 - scraper_core - INFO - Scraped 39 events for 2025-11-09
+2025-11-08 17:55:36,694 - scraper_core - INFO - Pausing after 5 requests...
+2025-11-08 17:55:39,454 - scraper_core - INFO - Scraped 39 events for 2025-11-07
+2025-11-08 17:55:42,417 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:55:42,938 - scraper_core - ERROR - Error creating Chrome driver: [WinError 183] Cannot create a file when that file already exists: 'C:\\Users\\44776\\appdata\\roaming\\undetected_chromedriver\\undetected\\chromedriver-win32\\chromedriver.exe' -> 'C:\\Users\\44776\\appdata\\roaming\\undetected_chromedriver\\undetected_chromedriver.exe'
+2025-11-08 17:55:42,938 - scraper_core - ERROR - Failed to create driver for 2025-11-08
+2025-11-08 17:55:59,076 - scraper_core - INFO - Scraped 39 events for 2025-11-10
+2025-11-08 17:55:59,409 - scraper_core - INFO - Scraped 39 events for 2025-11-09
+2025-11-08 17:55:59,658 - scraper_core - INFO - Pausing after 5 requests...
+2025-11-08 17:56:02,195 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:56:18,242 - scraper_core - INFO - Scraped 39 events for 2025-11-11
+2025-11-08 17:56:19,594 - scraper_core - INFO - Scraped 39 events for 2025-11-10
+2025-11-08 17:56:21,281 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:56:37,458 - scraper_core - INFO - Scraped 39 events for 2025-11-11
+2025-11-08 17:56:38,677 - scraper_core - INFO - Scraped 39 events for 2025-11-12
+2025-11-08 17:56:40,501 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:56:45,497 - scraper_core - ERROR - Error scraping 2025-11-12: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0xb358d3
+	0xb35914
+	0x94e76d
+	0x92c32d
+	0x9c32ee
+	0x9de799
+	0x9bc766
+	0x98dac0
+	0x98ede4
+	0xdb7974
+	0xdb2bea
+	0xb5e5c4
+	0xb4dd38
+	0xb54d9d
+	0xb3dee8
+	0xb3e0ac
+	0xb27d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+
+2025-11-08 17:56:56,267 - scraper_core - INFO - Scraped 39 events for 2025-11-13
+2025-11-08 17:56:59,238 - scraper_core - INFO - Scraped 39 events for 2025-11-13
+2025-11-08 17:57:10,359 - scraper_core - INFO - Scraped 39 events for 2025-11-14
+2025-11-08 17:57:10,590 - scraper_core - INFO - Pausing after 10 requests...
+2025-11-08 17:57:13,036 - scraper_core - INFO - Scraped 39 events for 2025-11-14
+2025-11-08 17:57:13,345 - scraper_core - INFO - Pausing after 10 requests...
+2025-11-08 17:57:16,329 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 17:57:32,700 - scraper_core - INFO - Scraped 39 events for 2025-11-15
+2025-11-08 17:57:34,010 - scraper_core - INFO - Scraped 39 events for 2025-11-15
+2025-11-08 17:57:35,007 - scraper_core - INFO - Scraping complete: 429 total events scraped
+2025-11-08 17:57:35,045 - __main__ - INFO - Scraped 429 events
+2025-11-08 17:57:35,046 - __main__ - INFO - Adding impact classification...
+2025-11-08 17:57:35,052 - __main__ - INFO - Loading existing data...
+2025-11-08 17:57:35,069 - __main__ - INFO - Found 2067 existing events
+2025-11-08 17:57:35,069 - __main__ - INFO - Reconciling data...
+2025-11-08 17:57:35,070 - data_reconciliation - INFO - Starting full reconciliation...
+2025-11-08 17:57:35,070 - data_reconciliation - INFO - Finding new events: 429 new vs 2067 existing
+2025-11-08 17:57:35,147 - data_reconciliation - INFO - Found 0 new events
+2025-11-08 17:57:35,152 - data_reconciliation - INFO - Finding updates: 429 new vs 2067 existing
+2025-11-08 17:57:35,446 - data_reconciliation - INFO - Found 0 events to update with actual values
+2025-11-08 17:57:35,446 - data_reconciliation - INFO - Reconciliation complete: {'total_new': 429, 'total_existing': 2067, 'new_events_found': 0, 'updates_found': 0, 'timestamp': '2025-11-08T17:57:35.446718'}
+2025-11-08 17:57:35,446 - __main__ - INFO - Creating backup: forexfactory_events_BACKUP.csv
+2025-11-08 17:57:35,456 - __main__ - INFO - Saving merged data to forexfactory_events_FINAL.csv
+2025-11-08 17:57:35,461 - __main__ - INFO - Saving daily snapshot to forexfactory_events_DAILY.csv
+2025-11-08 17:57:35,464 - __main__ - INFO - ======================================================================
+2025-11-08 17:57:35,464 - __main__ - INFO - DAILY SYNC COMPLETE
+2025-11-08 17:57:35,464 - __main__ - INFO -   Processed: 429
+2025-11-08 17:57:35,464 - __main__ - INFO -   Added: 0
+2025-11-08 17:57:35,464 - __main__ - INFO -   Updated: 0
+2025-11-08 17:57:35,464 - __main__ - INFO -   Total in main file: 455
+2025-11-08 17:57:35,464 - __main__ - INFO - ======================================================================
+2025-11-08 17:57:36,253 - scraper_core - INFO - Scraping complete: 312 total events scraped
+2025-11-08 17:57:36,261 - __main__ - INFO - Scraped 312 events
+2025-11-08 17:57:36,261 - __main__ - INFO - Adding impact classification...
+2025-11-08 17:57:36,264 - __main__ - INFO - Loading existing data...
+2025-11-08 17:57:36,296 - __main__ - INFO - Found 455 existing events
+2025-11-08 17:57:36,297 - __main__ - INFO - Reconciling data...
+2025-11-08 17:57:36,297 - data_reconciliation - INFO - Starting full reconciliation...
+2025-11-08 17:57:36,297 - data_reconciliation - INFO - Finding new events: 312 new vs 455 existing
+2025-11-08 17:57:36,310 - data_reconciliation - INFO - No existing data, all 0 are new
+2025-11-08 17:57:36,310 - data_reconciliation - INFO - Finding updates: 312 new vs 455 existing
+2025-11-08 17:57:36,315 - data_reconciliation - INFO - No existing data to update
+2025-11-08 17:57:36,315 - data_reconciliation - INFO - Reconciliation complete: {'total_new': 312, 'total_existing': 455, 'new_events_found': 0, 'updates_found': 0, 'timestamp': '2025-11-08T17:57:36.315558'}
+2025-11-08 17:57:36,315 - __main__ - INFO - Creating backup: forexfactory_events_BACKUP.csv
+2025-11-08 17:57:36,318 - __main__ - INFO - Saving merged data to forexfactory_events_FINAL.csv
+2025-11-08 17:57:36,321 - __main__ - INFO - Saving daily snapshot to forexfactory_events_DAILY.csv
+2025-11-08 17:57:36,323 - __main__ - INFO - ======================================================================
+2025-11-08 17:57:36,323 - __main__ - INFO - DAILY SYNC COMPLETE
+2025-11-08 17:57:36,323 - __main__ - INFO -   Processed: 312
+2025-11-08 17:57:36,323 - __main__ - INFO -   Added: 0
+2025-11-08 17:57:36,323 - __main__ - INFO -   Updated: 0
+2025-11-08 17:57:36,323 - __main__ - INFO -   Total in main file: 455
+2025-11-08 17:57:36,323 - __main__ - INFO - ======================================================================
+2025-11-08 18:35:32,818 - __main__ - INFO - ======================================================================
+2025-11-08 18:35:32,818 - __main__ - INFO - MONTHLY UPDATER (CSV): Fetching next 3 months of events
+2025-11-08 18:35:32,818 - __main__ - INFO - ======================================================================
+2025-11-08 18:35:32,818 - __main__ - INFO - Fetching data from 2025-11-08 to 2026-01-31
+2025-11-08 18:35:32,818 - __main__ - INFO - Starting scrape...
+2025-11-08 18:35:32,818 - scraper_core - INFO - Scraping from 2025-11-08 to 2026-01-31
+2025-11-08 18:35:33,651 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:35:37,088 - __main__ - INFO - ======================================================================
+2025-11-08 18:35:37,088 - __main__ - INFO - REAL-TIME FETCHER (CSV): Updating actual values for today
+2025-11-08 18:35:37,089 - __main__ - INFO - ======================================================================
+2025-11-08 18:35:37,089 - __main__ - INFO - Fetching today's events for 2025-11-08...
+2025-11-08 18:35:38,022 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:35:45,595 - scraper_core - WARNING - Timeout waiting for content on 2025-11-08: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0xd558d3
+	0xd55914
+	0xb6e76d
+	0xb4c32d
+	0xbe32ee
+	0xbfe799
+	0xbdc766
+	0xbadac0
+	0xbaede4
+	0xfd7974
+	0xfd2bea
+	0xd7e5c4
+	0xd6dd38
+	0xd74d9d
+	0xd5dee8
+	0xd5e0ac
+	0xd47d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+
+2025-11-08 18:35:50,249 - scraper_core - INFO - Scraped 39 events for 2025-11-08
+2025-11-08 18:35:50,597 - scraper_core - ERROR - Error scraping 2025-11-08: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0xd558d3
+	0xd55914
+	0xb6e76d
+	0xb4c32d
+	0xbe32ee
+	0xbfe799
+	0xbdc766
+	0xbadac0
+	0xbaede4
+	0xfd7974
+	0xfd2bea
+	0xd7e5c4
+	0xd6dd38
+	0xd74d9d
+	0xd5dee8
+	0xd5e0ac
+	0xd47d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+
+2025-11-08 18:35:50,919 - __main__ - INFO - No events scraped for today
+2025-11-08 18:35:53,385 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:36:02,439 - scraper_core - WARNING - Timeout waiting for content on 2025-11-09: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0x3058d3
+	0x305914
+	0x11e76d
+	0xfc32d
+	0x1932ee
+	0x1ae799
+	0x18c766
+	0x15dac0
+	0x15ede4
+	0x587974
+	0x582bea
+	0x32e5c4
+	0x31dd38
+	0x324d9d
+	0x30dee8
+	0x30e0ac
+	0x2f7d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+	0
+
+2025-11-08 18:36:07,443 - scraper_core - ERROR - Error scraping 2025-11-09: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0x3058d3
+	0x305914
+	0x11e76d
+	0xfc32d
+	0x1932ee
+	0x1ae799
+	0x18c766
+	0x15dac0
+	0x15ede4
+	0x587974
+	0x582bea
+	0x32e5c4
+	0x31dd38
+	0x324d9d
+	0x30dee8
+	0x30e0ac
+	0x2f7d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+	0
+
+2025-11-08 18:36:10,381 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:36:19,406 - scraper_core - WARNING - Timeout waiting for content on 2025-11-10: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0x3d58d3
+	0x3d5914
+	0x1ee76d
+	0x1cc32d
+	0x2632ee
+	0x27e799
+	0x25c766
+	0x22dac0
+	0x22ede4
+	0x657974
+	0x652bea
+	0x3fe5c4
+	0x3edd38
+	0x3f4d9d
+	0x3ddee8
+	0x3de0ac
+	0x3c7d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+
+2025-11-08 18:36:24,408 - scraper_core - ERROR - Error scraping 2025-11-10: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0x3d58d3
+	0x3d5914
+	0x1ee76d
+	0x1cc32d
+	0x2632ee
+	0x27e799
+	0x25c766
+	0x22dac0
+	0x22ede4
+	0x657974
+	0x652bea
+	0x3fe5c4
+	0x3edd38
+	0x3f4d9d
+	0x3ddee8
+	0x3de0ac
+	0x3c7d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+
+2025-11-08 18:36:27,440 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:36:36,588 - scraper_core - WARNING - Timeout waiting for content on 2025-11-11: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0x9d58d3
+	0x9d5914
+	0x7ee76d
+	0x7cc32d
+	0x8632ee
+	0x87e799
+	0x85c766
+	0x82dac0
+	0x82ede4
+	0xc57974
+	0xc52bea
+	0x9fe5c4
+	0x9edd38
+	0x9f4d9d
+	0x9ddee8
+	0x9de0ac
+	0x9c7d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+
+2025-11-08 18:36:41,591 - scraper_core - ERROR - Error scraping 2025-11-11: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0x9d58d3
+	0x9d5914
+	0x7ee76d
+	0x7cc32d
+	0x8632ee
+	0x87e799
+	0x85c766
+	0x82dac0
+	0x82ede4
+	0xc57974
+	0xc52bea
+	0x9fe5c4
+	0x9edd38
+	0x9f4d9d
+	0x9ddee8
+	0x9de0ac
+	0x9c7d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+
+2025-11-08 18:36:44,542 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:36:52,624 - scraper_core - WARNING - Timeout waiting for content on 2025-11-12: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0xd858d3
+	0xd85914
+	0xb9e76d
+	0xb7c32d
+	0xc132ee
+	0xc2e799
+	0xc0c766
+	0xbddac0
+	0xbdede4
+	0x1007974
+	0x1002bea
+	0xdae5c4
+	0xd9dd38
+	0xda4d9d
+	0xd8dee8
+	0xd8e0ac
+	0xd77d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+
+2025-11-08 18:36:57,628 - scraper_core - ERROR - Error scraping 2025-11-12: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=142.0.7444.60)
+Stacktrace:
+Symbols not available. Dumping unresolved backtrace:
+	0xd858d3
+	0xd85914
+	0xb9e76d
+	0xb7c32d
+	0xc132ee
+	0xc2e799
+	0xc0c766
+	0xbddac0
+	0xbdede4
+	0x1007974
+	0x1002bea
+	0xdae5c4
+	0xd9dd38
+	0xda4d9d
+	0xd8dee8
+	0xd8e0ac
+	0xd77d2a
+	0x76b25d49
+	0x77d7d6db
+	0x77d7d661
+
+2025-11-08 18:36:57,801 - scraper_core - INFO - Pausing after 5 requests...
+2025-11-08 18:37:03,578 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:37:20,562 - scraper_core - INFO - Scraped 39 events for 2025-11-13
+2025-11-08 18:37:23,588 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:37:42,179 - scraper_core - INFO - Scraped 114 events for 2025-11-14
+2025-11-08 18:37:45,216 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:38:00,669 - scraper_core - INFO - Scraped 39 events for 2025-11-15
+2025-11-08 18:38:03,724 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:38:22,698 - scraper_core - INFO - Scraped 39 events for 2025-11-16
+2025-11-08 18:38:25,799 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:38:42,771 - scraper_core - INFO - Scraped 39 events for 2025-11-17
+2025-11-08 18:38:43,074 - scraper_core - INFO - Pausing after 10 requests...
+2025-11-08 18:38:48,810 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:39:04,965 - scraper_core - INFO - Scraped 39 events for 2025-11-18
+2025-11-08 18:39:08,013 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:39:24,703 - scraper_core - INFO - Scraped 39 events for 2025-11-19
+2025-11-08 18:39:27,774 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:39:43,973 - scraper_core - INFO - Scraped 39 events for 2025-11-20
+2025-11-08 18:39:47,016 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:40:04,446 - scraper_core - INFO - Scraped 39 events for 2025-11-21
+2025-11-08 18:40:07,506 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
+2025-11-08 18:40:23,390 - scraper_core - INFO - Scraped 39 events for 2025-11-22
+2025-11-08 18:40:23,746 - scraper_core - INFO - Pausing after 15 requests...
+2025-11-08 18:40:29,517 - undetected_chromedriver.patcher - INFO - patching driver executable C:\Users\44776\appdata\roaming\undetected_chromedriver\undetected_chromedriver.exe
