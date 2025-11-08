@@ -43,7 +43,7 @@ jobs:
 
       - name: Upload logs
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: realtime-logs-${{ github.run_number }}
           path: scraper_2.2/realtime_15min.log
