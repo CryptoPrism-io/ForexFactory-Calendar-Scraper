@@ -48,21 +48,7 @@ jobs:
               exit(1)
           "
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: pip install --no-cache-dir -r scraper_2.2/requirements.txt
-
-      - name: Install Chrome
-        uses: browser-actions/setup-chrome@latest
-        with:
-          cache: true
-
-      - name: Run monthly backfill job
+      - name: Run monthly backfill job (Docker)
         env:
           POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
@@ -72,10 +58,19 @@ jobs:
           SCRAPER_VERBOSE: 'true'
           SCRAPER_TIMEOUT: '60'
           OUTPUT_MODE: 'both'
-          GITHUB_ACTIONS: 'true'
         run: |
-          cd scraper_2.2
-          python jobs/monthly_backfill.py
+          docker run \
+            -e POSTGRES_HOST="$POSTGRES_HOST" \
+            -e POSTGRES_PORT="$POSTGRES_PORT" \
+            -e POSTGRES_DB="$POSTGRES_DB" \
+            -e POSTGRES_USER="$POSTGRES_USER" \
+            -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+            -e SCRAPER_VERBOSE="$SCRAPER_VERBOSE" \
+            -e SCRAPER_TIMEOUT="$SCRAPER_TIMEOUT" \
+            -e OUTPUT_MODE="$OUTPUT_MODE" \
+            -e GITHUB_ACTIONS="true" \
+            ghcr.io/${{ github.repository }}/forexfactory-scraper:latest \
+            python jobs/monthly_backfill.py
 
       - name: Upload logs
         if: always()
