@@ -15,25 +15,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r scraper_2.2/requirements.txt
-
-      - name: Install Chrome browser
-        uses: browser-actions/setup-chrome@latest
-
-      - name: Verify Chrome installation
-        run: |
-          which google-chrome || which chromium || which chromium-browser
-          google-chrome --version || chromium --version || chromium-browser --version
-          echo "Chrome installation verified"
-
       - name: Test database connectivity
         env:
           POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
@@ -42,7 +23,7 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: |
-          python -c "
+          python3 -c "
           import psycopg2
           try:
               conn = psycopg2.connect(
@@ -59,7 +40,7 @@ jobs:
               exit(1)
           "
 
-      - name: Run realtime update job
+      - name: Run realtime update job (Docker)
         env:
           POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
           POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
@@ -69,10 +50,19 @@ jobs:
           SCRAPER_VERBOSE: 'false'
           SCRAPER_TIMEOUT: '60'
           OUTPUT_MODE: 'both'
-          GITHUB_ACTIONS: 'true'
         run: |
-          cd scraper_2.2
-          python jobs/realtime_15min.py
+          docker run \
+            -e POSTGRES_HOST="$POSTGRES_HOST" \
+            -e POSTGRES_PORT="$POSTGRES_PORT" \
+            -e POSTGRES_DB="$POSTGRES_DB" \
+            -e POSTGRES_USER="$POSTGRES_USER" \
+            -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+            -e SCRAPER_VERBOSE="$SCRAPER_VERBOSE" \
+            -e SCRAPER_TIMEOUT="$SCRAPER_TIMEOUT" \
+            -e OUTPUT_MODE="$OUTPUT_MODE" \
+            -e GITHUB_ACTIONS="true" \
+            ghcr.io/${{ github.repository }}/forexfactory-scraper:latest \
+            python jobs/realtime_15min.py
 
       - name: Upload logs
         if: always()
