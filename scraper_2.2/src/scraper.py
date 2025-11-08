@@ -359,20 +359,37 @@ class ForexFactoryScraper:
 
     def get_driver(self):
         """Create undetected Chrome driver with Cloudflare bypass"""
+        import os
+
         options = uc.ChromeOptions()
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
+        options.add_argument("--disable-software-rasterizer")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--disable-plugins")
         options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
 
-        try:
-            driver = uc.Chrome(options=options, version_main=None)
-            logger.info("Chrome driver created")
-            return driver
-        except Exception as e:
-            logger.error(f"Error creating driver: {e}")
-            return None
+        # Add headless mode for CI/CD environments (GitHub Actions)
+        if os.getenv('CI') or os.getenv('GITHUB_ACTIONS'):
+            options.add_argument("--headless=new")
+            logger.info("Running in headless mode (CI/CD detected)")
+
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                driver = uc.Chrome(options=options, version_main=None, use_subprocess=False)
+                logger.info("Chrome driver created successfully")
+                return driver
+            except Exception as e:
+                logger.warning(f"Attempt {attempt + 1}/{max_retries} failed: {e}")
+                if attempt < max_retries - 1:
+                    import time
+                    time.sleep(2)  # Wait before retry
+                else:
+                    logger.error(f"Failed to create driver after {max_retries} attempts: {e}")
+                    return None
 
     def scrape_period(self, period="day=today"):
         """
