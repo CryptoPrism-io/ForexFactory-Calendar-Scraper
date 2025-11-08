@@ -75,7 +75,9 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           SCRAPER_VERBOSE: 'true'
+          SCRAPER_TIMEOUT: '60'
           OUTPUT_MODE: 'both'
+          GITHUB_ACTIONS: 'true'
         run: |
           cd scraper_2.2
           python jobs/monthly_backfill.py
