@@ -17,15 +17,19 @@ from scraper import ForexFactoryScraper
 from database import get_db_manager
 from config import get_config
 
-# Setup logging
+# Setup logging with UTF-8 encoding for console
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('daily_sync.log'),
-        logging.StreamHandler()
+        logging.FileHandler('daily_sync.log', encoding='utf-8'),
+        logging.StreamHandler(sys.stdout)
     ]
 )
+# Force UTF-8 output on Windows
+if sys.stdout.encoding != 'utf-8':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 logger = logging.getLogger(__name__)
 
 
