@@ -25,6 +25,7 @@ jobs:
           SCRAPER_VERBOSE: 'false'
           SCRAPER_TIMEOUT: '60'
           OUTPUT_MODE: 'both'
+          IMAGE_NAME: ghcr.io/${{ github.repository }}/forexfactory-scraper:latest
         run: |
           docker run \
             -e POSTGRES_HOST="$POSTGRES_HOST" \
@@ -36,7 +37,7 @@ jobs:
             -e SCRAPER_TIMEOUT="$SCRAPER_TIMEOUT" \
             -e OUTPUT_MODE="$OUTPUT_MODE" \
             -e GITHUB_ACTIONS="true" \
-            ghcr.io/${{ github.repository }}/forexfactory-scraper:latest \
+            $(echo "$IMAGE_NAME" | tr '[:upper:]' '[:lower:]') \
             python jobs/daily_sync.py
 
       - name: Upload logs
