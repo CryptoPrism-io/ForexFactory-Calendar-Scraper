@@ -4,7 +4,21 @@
       "Bash(tree:*)",
       "Bash(cat:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(pip install:*)",
+      "Bash(python -c:*)",
+      "Bash(python migrations/run_migration.py:*)",
+      "Bash(python jobs/monthly_backfill.py:*)",
+      "Bash(tee:*)",
+      "Bash(timeout 120 python:*)",
+      "Bash(git rm:*)",
+      "Bash(gh auth status:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git remote remove:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(gh secret set:*)"
     ],
     "deny": [],
     "ask": []
