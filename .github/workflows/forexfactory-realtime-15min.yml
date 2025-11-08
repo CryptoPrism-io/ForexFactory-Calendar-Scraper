@@ -1,0 +1,62 @@
+name: ForexFactory Realtime Update (15 Minutes)
+
+on:
+  schedule:
+    # Run every 15 minutes (0, 15, 30, 45 minutes past each hour)
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  realtime-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scraper_2.2/requirements.txt
+
+      - name: Install Chrome browser
+        uses: browser-actions/setup-chrome@latest
+
+      - name: Run realtime update job
+        env:
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          SCRAPER_VERBOSE: 'false'
+          OUTPUT_MODE: 'both'
+        run: |
+          cd scraper_2.2
+          python jobs/realtime_15min.py
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: realtime-logs-${{ github.run_number }}
+          path: scraper_2.2/realtime_15min.log
+          retention-days: 7
+
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ ForexFactory realtime update job failed. Check workflow logs.'
+            })

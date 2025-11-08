@@ -1,0 +1,20 @@
+# ForexFactory Calendar Scraper & Database Pipeline
+# Core scraping dependencies
+selenium>=4.15.0
+undetected-chromedriver>=3.5.4
+beautifulsoup4>=4.12.0
+
+# Data processing
+pandas>=2.0.0
+
+# Database
+psycopg2-binary>=2.9.9
+
+# Configuration & Environment
+python-dotenv>=1.0.0
+
+# Logging and utilities
+PyYAML>=6.0.0
+
+# Optional: for improved stability
+requests>=2.31.0
