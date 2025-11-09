@@ -440,6 +440,36 @@ class ForexFactoryScraper:
 
             time.sleep(2)
 
+            # Scroll down to load all lazy-loaded events
+            logger.info("Scrolling page to load all events...")
+            last_height = driver.execute_script("return document.body.scrollHeight")
+            scroll_attempts = 0
+            max_scrolls = 10
+
+            while scroll_attempts < max_scrolls:
+                # Scroll to bottom
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(1.5)  # Wait for new content to load
+
+                # Calculate new scroll height
+                new_height = driver.execute_script("return document.body.scrollHeight")
+
+                if new_height == last_height:
+                    # No new content loaded, we've reached the end
+                    break
+
+                last_height = new_height
+                scroll_attempts += 1
+
+                if self.verbose:
+                    logger.debug(f"Scroll {scroll_attempts}: Height {new_height}px")
+
+            logger.info(f"Scrolled {scroll_attempts} times to load all content")
+
+            # Scroll back to top for cleaner parsing
+            driver.execute_script("window.scrollTo(0, 0);")
+            time.sleep(1)
+
             logger.info("Parsing HTML with semantic selectors...")
             soup = BeautifulSoup(driver.page_source, 'html.parser')
             rows = soup.find_all('tr', class_='calendar__row')
