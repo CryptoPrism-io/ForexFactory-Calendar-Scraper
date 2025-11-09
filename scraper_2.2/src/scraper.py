@@ -441,28 +441,39 @@ class ForexFactoryScraper:
             time.sleep(2)
 
             # Scroll down to load all lazy-loaded events
+            # Use SPACE key for natural page-by-page scrolling
             logger.info("Scrolling page to load all events...")
+            from selenium.webdriver.common.keys import Keys
+
+            body = driver.find_element("tag name", "body")
             last_height = driver.execute_script("return document.body.scrollHeight")
             scroll_attempts = 0
-            max_scrolls = 10
+            max_scrolls = 15  # Increased to handle more content
 
             while scroll_attempts < max_scrolls:
-                # Scroll to bottom
-                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                time.sleep(1.5)  # Wait for new content to load
+                # Press SPACE to scroll down one page
+                body.send_keys(Keys.SPACE)
+                time.sleep(0.8)  # Wait for content to load
 
-                # Calculate new scroll height
+                # Check if we've reached the bottom
+                current_position = driver.execute_script("return window.pageYOffset + window.innerHeight")
                 new_height = driver.execute_script("return document.body.scrollHeight")
 
-                if new_height == last_height:
-                    # No new content loaded, we've reached the end
-                    break
+                if current_position >= new_height - 100:  # Near bottom (within 100px)
+                    # Try scrolling once more to be sure
+                    body.send_keys(Keys.SPACE)
+                    time.sleep(0.8)
+                    final_height = driver.execute_script("return document.body.scrollHeight")
+
+                    if final_height == new_height:
+                        # No more content, we're done
+                        break
 
                 last_height = new_height
                 scroll_attempts += 1
 
                 if self.verbose:
-                    logger.debug(f"Scroll {scroll_attempts}: Height {new_height}px")
+                    logger.debug(f"Scroll {scroll_attempts}: Position {current_position}/{new_height}px")
 
             logger.info(f"Scrolled {scroll_attempts} times to load all content")
 
