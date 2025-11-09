@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(python:*)",
-      "Bash(docker build:*)"
+      "Bash(docker build:*)",
+      "Bash(gh workflow run:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(tee:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nUpdate Claude Code permissions for workflow automation\n\nAdd permissions for:\n- GitHub workflow commands (gh workflow run/list/view)\n- Output logging (tee)\n- Git push operations\n\nThis enables automated Docker image building and CI/CD workflow\nmanagement without manual approval prompts.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []
