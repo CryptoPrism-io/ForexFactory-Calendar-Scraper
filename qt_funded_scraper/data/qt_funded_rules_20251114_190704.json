@@ -1,0 +1,721 @@
+{
+  "programs": {
+    "qt-prime": {
+      "name": "qt-prime",
+      "title": "QT PRIME",
+      "url": "https://qtfunded.kb.help/qt-prime/",
+      "overview": [],
+      "rules": [
+        {
+          "category": "1. What is the QT PRIME Challenge?",
+          "details": [
+            "QT PRIME is a structured trading challenge designed for traders who seek flexibility, competitive trading conditions, and strong risk management. It is available in both 2-Step and 3-Step Evaluations, allowing traders to choose a format that suits their trading style"
+          ]
+        },
+        {
+          "category": "Key Points",
+          "details": [
+            "It’s also important to understand that failing to meet the minimum trading day requirement will not result in any kind of breach or penalty. You will simply have the issue explained to you and will be able to complete a new cycle allowing you the ability to meet the requirements without any penalty. This process ensures fairness and supports the development of stable, sustainable trading performance over time.",
+            "This requirement is for QT Prime Funded Accounts only.",
+            "It’s also important to understand that failing to meet the minimum trading day requirement will not result in any kind of breach or penalty. You will simply have the issue explained to you and will be able to complete a new cycle allowing you the ability to meet the requirements without any penalty. This process ensures fairness and supports the development of stable, sustainable trading performance over time.",
+            "This requirement is for QT Prime Funded Accounts only.",
+            "This requirement is only applicable for traders first cycle only.",
+            "This requirement is only applicable for traders first cycle only."
+          ]
+        },
+        {
+          "category": "6. What is the News Trading Rule? (Funded Accounts Only)",
+          "details": [
+            "Red Folder news events have restrictions, see more information here ->QT News Rule",
+            "No opening, closing, or adjusting trades 5 minutes before or after a Red Folder news event.",
+            "If a predefined Stop Loss (SL) or Take Profit (TP) is hit, it will be honored.",
+            "Violating this rule will result in a hard breach",
+            "Red Folder news events have restrictions, see more information here ->QT News Rule",
+            "No opening, closing, or adjusting trades 5 minutes before or after a Red Folder news event.",
+            "If a predefined Stop Loss (SL) or Take Profit (TP) is hit, it will be honored.",
+            "Violating this rule will result in a hard breach",
+            "QT PRIME ON-DEMANDDOES NOThave the news rule applied"
+          ]
+        },
+        {
+          "category": "7. What is the Layering Rule? (Funded Accounts Only)",
+          "details": [
+            "Traders cannot have three or more open positions on the same asset at the same time.",
+            "Violating this rule will result in a hard breach.",
+            "NO LAYERING RULE - For Accounts purchased or issued after the 9th of April 2025"
+          ]
+        },
+        {
+          "category": "8. What is the Stop Loss (SL) Rule? (Funded Accounts Only)",
+          "details": [
+            "A Stop Loss must be placed within 60 seconds of opening a trade",
+            "A Stop Loss must be placed within 60 seconds of opening a trade",
+            "Please Note - Traders who are displaying any abusive behaviors regarding this stop loss rule will face an additional review by the Risk and Compliance team. An example of abusive behavior is undertaking prohibited strategies such as HFT, as well as closing A trade under 60 seconds without a stop loss set.",
+            "Failure to place a Stop Loss within 60 seconds will result in a hard breach.NO STOP LOSS RULE - For Accounts purchased after the 13th of June 2025",
+            "Failure to place a Stop Loss within 60 seconds will result in a hard breach.NO STOP LOSS RULE - For Accounts purchased after the 13th of June 2025"
+          ]
+        },
+        {
+          "category": "10. What leverage is provided under QT PRIME?",
+          "details": [
+            "Forex: 1:50",
+            "Indices & Oil: 1:20",
+            "Metals: 1:15",
+            "Crypto: 1:1",
+            "Forex: 1:50",
+            "Indices & Oil: 1:20",
+            "Metals: 1:15",
+            "Crypto: 1:1"
+          ]
+        },
+        {
+          "category": "11. How are payouts handled?",
+          "details": [
+            "Payout Timings for funded traders (option selected at checkout)",
+            "1. Biweekly payouts with a profit split of 80%",
+            "2. On Demand payouts -An 35% Consistency Score must be met to be eligible for an On Demand Payoutwith a proft split of 100% &An Minimum of 3% to be requested",
+            "Please seePerformance fee policyfor more information",
+            "QT PRIME is designed for traders looking for the best trading conditions, structured risk management, and flexibility. If you have further questions, please contact our support team."
+          ]
+        },
+        {
+          "source": "Responsibilities of Traders",
+          "source_url": "https://qtfunded.kb.help/responsibilities-of-traders/",
+          "category": "Account Management",
+          "details": [
+            "Control and Ownership:You are solely responsible for managing your account, safeguarding your credentials, and making all trading decisions",
+            "Device Usage:Please ensure the device used is owned by the account holder - any violation of this will result inaccount & accrued simulated profit forfeiture",
+            "Exclusive Access:Your account is for your use only. Sharing your login credentials with others is strictly prohibited.",
+            "Security of Information:QT | FUNDED cannot be held liable for security breaches originating from your side, such as compromised emails or dashboard access.Protecting your login details is essential.",
+            "Email Communication Responsibility:Traders are responsible for ensuring they receive and review all communications from our team, including trade reports and important account updates. To prevent missing critical information, traders must add us as a trusted sender and regularly check their spam or junk folders. Failure to do so may result in missed notifications or delays, for which the trader will be held accountable.In regards to your funded trader contract; please ensure the emailMail@digisigner.comis not marked as spam - as an email sent from this correspondence address will contain your contract; which you MUST sign if you are to be allowed to continue to trade your Funded Account.",
+            "Control and Ownership:You are solely responsible for managing your account, safeguarding your credentials, and making all trading decisions",
+            "Exclusive Access:Your account is for your use only. Sharing your login credentials with others is strictly prohibited.",
+            "Security of Information:QT | FUNDED cannot be held liable for security breaches originating from your side, such as compromised emails or dashboard access.Protecting your login details is essential.",
+            "Email Communication Responsibility:Traders are responsible for ensuring they receive and review all communications from our team, including trade reports and important account updates. To prevent missing critical information, traders must add us as a trusted sender and regularly check their spam or junk folders. Failure to do so may result in missed notifications or delays, for which the trader will be held accountable.In regards to your funded trader contract; please ensure the emailMail@digisigner.comis not marked as spam - as an email sent from this correspondence address will contain your contract; which you MUST sign if you are to be allowed to continue to trade your Funded Account."
+          ]
+        },
+        {
+          "source": "Responsibilities of Traders",
+          "source_url": "https://qtfunded.kb.help/responsibilities-of-traders/",
+          "category": "Simulated Funds Responsibilities",
+          "details": [
+            "Practice Diligently:Although you are trading with simulated funds, treat the platform with the seriousness of a real trading environment to develop your skills effectively.",
+            "Accountability:You are fully accountable for all actions performed within your account. Every decision and trade made is your responsibility. Traders are wholly responsible to follow the guidelines that are set within these clauses as well as to adhere to the rules of the respective plan they have chosen:QT PRIME,QT POWERorQT INSTANT",
+            "Payout Requests:you must complete another payout cycle and complete the requirements again to make the new cycle eligible for payout - please contact the Risk team via live chat to have your payout date adjusted.",
+            "Excessive Exposure:You are entirely responsible to trade within the guidelines and parameters set, those who have been found to have risked excessively i.e. risking more than 75% of their daily or max drawdown limits/lot limits within their open positions will face the penalty of having their evaluations reset to phase 1 at the event of a evaluation pass",
+            "Comissions:Traders are aware that commissions are to be included into exposure",
+            "Limitation of Liability:QT | FUNDED is not liable for losses resulting from security breaches, user errors, or issues on the client’s side. It is crucial to trade with vigilance and informed awareness. QT | FUNDED cannot be held liable for any form of loss due to the interruption of third-party services.",
+            "Timings:Traders are responsible for using the dashboard timings provided for all limits including drawdown - please note: the daily drawdown reset does not correlate with any resets of risk related thresholds",
+            "Black Swan Events:During black swan events, markets can experience extreme volatility, including significant slippage, widened spreads, and erratic price movements across asset classes. These conditions may result in unrealistic fills and substantial losses, even for experienced traders.While these events may not fall under typical “news rule” breaches, spontaneous announcements and economic shocks can lead to trades being voided due to market irregularities.",
+            "Practice Diligently:Although you are trading with simulated funds, treat the platform with the seriousness of a real trading environment to develop your skills effectively.",
+            "Accountability:You are fully accountable for all actions performed within your account. Every decision and trade made is your responsibility. Traders are wholly responsible to follow the guidelines that are set within these clauses as well as to adhere to the rules of the respective plan they have chosen:QT PRIME,QT POWERorQT INSTANT",
+            "Excessive Exposure:You are entirely responsible to trade within the guidelines and parameters set, those who have been found to have risked excessively i.e. risking more than 75% of their daily or max drawdown limits/lot limits within their open positions will face the penalty of having their evaluations reset to phase 1 at the event of a evaluation pass",
+            "Comissions:Traders are aware that commissions are to be included into exposure",
+            "Limitation of Liability:QT | FUNDED is not liable for losses resulting from security breaches, user errors, or issues on the client’s side. It is crucial to trade with vigilance and informed awareness. QT | FUNDED cannot be held liable for any form of loss due to the interruption of third-party services.",
+            "Timings:Traders are responsible for using the dashboard timings provided for all limits including drawdown - please note: the daily drawdown reset does not correlate with any resets of risk related thresholds",
+            "Black Swan Events:During black swan events, markets can experience extreme volatility, including significant slippage, widened spreads, and erratic price movements across asset classes. These conditions may result in unrealistic fills and substantial losses, even for experienced traders.While these events may not fall under typical “news rule” breaches, spontaneous announcements and economic shocks can lead to trades being voided due to market irregularities.",
+            "Please note that while QT | FUNDED provides the foundation and resources for your trading journey, the path you choose and the decisions you make are solely your responsibility."
+          ]
+        },
+        {
+          "source": "Performance Fee Policy",
+          "source_url": "https://qtfunded.kb.help/performance-fee-policy",
+          "category": "1. Who is responsible for submitting the correct wallet address?",
+          "details": [
+            "Traders arefully responsiblefor submitting the correct wallet address duringPayout Submission.",
+            "⚠️ QTFunded doesnot take liabilityfor any incorrect wallet submissions, invalid addresses, or funds sent to the wrong wallet."
+          ]
+        },
+        {
+          "source": "Performance Fee Policy",
+          "source_url": "https://qtfunded.kb.help/performance-fee-policy",
+          "category": "2. Can I change my wallet address after submitting it?",
+          "details": [
+            "Once you submit your wallet address, it is consideredfinal. We cannot guarantee any changes after submission.",
+            "If a customer requests a wallet change, please be aware that that:",
+            "The wallet address submitted isfinal and used for payment processing.",
+            "If the wallet isinvalidornot on the correct network, our team will reach out directly.",
+            "If a validUSDC ERC-20 walletwas submitted, it isfinal upon submission.",
+            "The wallet address submitted isfinal and used for payment processing.",
+            "If the wallet isinvalidornot on the correct network, our team will reach out directly.",
+            "If a validUSDC ERC-20 walletwas submitted, it isfinal upon submission."
+          ]
+        },
+        {
+          "source": "Performance Fee Policy",
+          "source_url": "https://qtfunded.kb.help/performance-fee-policy",
+          "category": "3. What if I need to request a wallet change?",
+          "details": [
+            "If you urgently need to request a wallet address change, please email:📧Risk@qtfunded.comSubject:“Wallet Address Change”",
+            "We will review the request and make the changeif possible.However, please note — wecannot guaranteeany changes, especially if your payout has already been processed."
+          ]
+        },
+        {
+          "source": "Performance Fee Policy",
+          "source_url": "https://qtfunded.kb.help/performance-fee-policy",
+          "category": "Risk Interviews",
+          "details": [
+            "Q: What is a risk interview?",
+            "A: A risk interview is a standard part of our internal risk assessment process. It’s used to verify certain information and ensure compliance with our policies.",
+            "Q: When are risk interviews required?",
+            "A: Risk interviews are issued at our discretion. Not every case will require one, but when we determine it’s necessary, participation is mandatory.",
+            "Q: What happens if I don’t attend my risk interview?",
+            "A: If you do not attend your scheduled risk interview, you will forfeit your payout. Attending the interview is a requirement under our internal risk policies, and failure to comply will result in your payout request being denied.",
+            "Q: Can I reschedule my interview?",
+            "A: In most cases, yes — but you must notify us ahead of time. Missed interviews without prior communication may be treated as forfeiture.",
+            "The date provided for your risk interview is the confirmed appointment date. Please note that this schedule is fixed; however, if any earlier time slots become available, our team will proactively reach out to offer you the opportunity to reschedule.We recommend keeping an eye on your email for any updates or changes from our support team. Please do not reach out to our support team to request an earlier appointment date."
+          ]
+        }
+      ],
+      "requirements": [
+        {
+          "category": "4. What are the trading day requirements?",
+          "details": [
+            "Aminimumof 4 trading days per phase (including funded accounts).",
+            "Funded tradersmusthave at least 2 profitable days witha minimumof 0.5% profit each",
+            "Aminimumof 4 trading days per phase (including funded accounts)."
+          ]
+        }
+      ],
+      "prohibited": [],
+      "compliance_examples": [
+        {
+          "category": "Example of Improper Trading Practice:",
+          "details": [
+            "If a trader typically opens positions averaging 15 lots and makes a profit of $10,000 on their $100,000 account, then suddenly switches to trading 0.01 lots simply to mark additional trading days, this would be considered improper.Such actions do not reflect the trader’s normal approach or strategy and go against our core principles of “Funding Skilled Traders.” We are committed to supporting and funding traders who demonstrate discipline, respect for trading standards, and a genuine approach to their craft. Our funded process is designed to recognize authentic trading ability — not to be used for short-term advantage.",
+            "Day",
+            "Lot Size",
+            "Trading Style",
+            "Result",
+            "Notes",
+            "Day 1",
+            "15 lots",
+            "High-risk gold trade",
+            "+10%",
+            "One big win",
+            "Day 2",
+            "0.1 lot",
+            "Tiny scalp",
+            "Drastically smaller trade",
+            "Day 3",
+            "No meaningful risk or volume",
+            "Day 4",
+            "Just trying to meet ‘4 days’ rule"
+          ],
+          "table": {
+            "headers": [],
+            "rows": [
+              [
+                "Day",
+                "Lot Size",
+                "Trading Style",
+                "Result",
+                "Notes"
+              ],
+              [
+                "Day 1",
+                "15 lots",
+                "High-risk gold trade",
+                "+10%",
+                "One big win"
+              ],
+              [
+                "Day 2",
+                "0.1 lot",
+                "Tiny scalp",
+                "0%",
+                "Drastically smaller trade"
+              ],
+              [
+                "Day 3",
+                "0.1 lot",
+                "Tiny scalp",
+                "0%",
+                "No meaningful risk or volume"
+              ],
+              [
+                "Day 4",
+                "0.1 lot",
+                "Tiny scalp",
+                "0%",
+                "Just trying to meet ‘4 days’ rule"
+              ]
+            ]
+          }
+        }
+      ],
+      "violation_examples": [],
+      "account_details": [
+        {
+          "category": "2. What are the profit targets for the evaluation phase?",
+          "details": [
+            "2-Step Challenge:",
+            "Stage 1: 8% Profit Target",
+            "Stage 2: 5% Profit Target",
+            "Stage 1: 8% Profit Target",
+            "Stage 2: 5% Profit Target",
+            "3-Step Challenge:",
+            "Stage 1: 6% Profit Target",
+            "Stage 2: 6% Profit Target",
+            "Stage 3: 6% Profit Target",
+            "Stage 1: 6% Profit Target",
+            "Stage 2: 6% Profit Target",
+            "Stage 3: 6% Profit Target"
+          ]
+        },
+        {
+          "category": "3. What are the drawdown limits?",
+          "details": [
+            "Daily Drawdown:4% fixed, based on the initial balance",
+            "This means the daily drawdown is always calculated from the starting account balance and remains fixed, regardless of whether the account is in profit or drawdown.",
+            "Example: On a $100,000 account, the daily drawdown will always be $4,000, whether the balance is above or below $100,000.",
+            "During daylight saving time, which typically occurs during the summer months, the server time is set to Greenwich Mean Time (GMT) + 3. This means the daily loss limit resets at 1 am GMT+3.For the remainder of the year, when daylight saving time is not in effect, the server time is adjusted to GMT+2. In this case, the daily loss limit resets at midnight GMT+2.",
+            "Maximum Drawdown:10% of the initial balance",
+            "Equity Protector (Optional at Purchase):1.5%",
+            "Auto-close all open positions when 1.5% floating loss is recorded in any trade. (This is a protective measure and is not considered a breach).",
+            "Equity Protector Disclaimer:There can be a delay in the execution of position closures after the Equity Protector detects a 1.5% floating loss. Due to market volatility, the final closed loss may vary. It is recommended that traders do not solely rely on the Equity Protector and instead use Stop Losses for proper risk management"
+          ]
+        },
+        {
+          "category": "For Prime Funded Accounts (New Accounts/ Reset Accounts)",
+          "details": [
+            "We require traders to complete a minimum of four trading days before meeting the account qualification criteria. Traders are expected to maintain a steady approach to their trade sizing and strategy across these days to ensure results reflect genuine and realistic trading performance.",
+            "Please note that this amendment of the Trading Day Requirement is only on the first payout cycle forQT Prime Funded Accountsonly. This update does not apply to Prime On-Demand, Power, or Instant accounts, nor to subsequent payout cycles once the first withdrawal has been approved on an account.",
+            "The purpose of this measure is to encourage safe and sustainable account management over the long term. It aims to prevent short-term or “one big win” trading behavior designed to exploit proprietary rules for rapid gains, which bear little relevance to consistent market performance.",
+            "This guideline is not intended to restrict individual trading styles but rather to support structured trading habits that foster long-term growth and stability. Regular engagement in the markets builds discipline, skill, and confidence — key attributes of successful traders."
+          ]
+        },
+        {
+          "category": "What is the maximum allowed risk? (Funded Accounts Only)",
+          "details": [
+            "Funded traders must not expose more than 2.5% of their initial account balance at any one time.",
+            "Gambling Policies Regarding the EvaluationOn the Evaluation, whilst there is no set risk restriction - we advise prudent risk management in-line with our Excessive Exposure clause stipulated inResponsibilities of Traders",
+            "Please read ourConditions of fundingfor more insights.",
+            "The \"all-or-nothing\" approach is strictly prohibited under the Gambling Policy -Prohibited Trading Strategies"
+          ]
+        },
+        {
+          "category": "9. What account conditions are available?",
+          "details": [
+            "Traders can choose between:",
+            "Raw Spreads + Commission, or",
+            "Variable Spreads (Commission-Free)",
+            "Raw Spreads + Commission, or",
+            "Variable Spreads (Commission-Free)",
+            "All accounts are swap-free by default.",
+            "Commissions forRaw SpreadsAccount:",
+            "$2 per lot per side (buy/sell)",
+            "$4 per lot per round trip",
+            "$2 per lot per side (buy/sell)",
+            "$4 per lot per round trip",
+            "Applies to all instruments (Forex, Indices, Metals, and Crypto).",
+            "Oil is Comission Free"
+          ]
+        }
+      ]
+    },
+    "qt-power": {
+      "name": "qt-power",
+      "title": "QT POWER",
+      "url": "https://qtfunded.kb.help/qt-power/",
+      "overview": [],
+      "rules": [
+        {
+          "category": "What is QT POWER",
+          "details": [
+            "QT POWER is a trading account that follows a two-step evaluation process for traders"
+          ]
+        },
+        {
+          "category": "How many trading days are required per phase?",
+          "details": [
+            "A minimum of 4 trading days is required for each phase."
+          ]
+        },
+        {
+          "category": "What leverage is offered on different asset classes?",
+          "details": [
+            "Forex: 1:100",
+            "Indices & Metals: 1:35",
+            "Crypto: 1:2.5"
+          ]
+        },
+        {
+          "category": "What are the key rules for the Challenge and Funded Accounts?",
+          "details": [
+            "Consistency Rule: Both Challenge and Funded Accounts must maintain a35% consistency score(see below)",
+            "The maximum risk per trade or overall open positions is 2% of the accounts balance(Hard Breach)",
+            "For purchases and accounts issued after the 9th of April 2025 the gambling rule has beenREMOVED",
+            "Please be aware that we prohibit 'ALL OR NOTHING trading' strategiesProhibited Trading Strategies"
+          ]
+        },
+        {
+          "category": "QT POWER Payout cycles",
+          "details": [
+            "Payout on demand - both minimum days & consistency score must be met in order to be able to request a payout on demand"
+          ]
+        },
+        {
+          "category": "How This Works:",
+          "details": [
+            "Your best trading day is $600 (Day 4).",
+            "Your total profit at the end of five days is $2,000.",
+            "The Consistency Score shows how evenly you spread your profits. A lower score means more consistent trading, while a higher score indicates most profits came from one big day. It's calculated as (Best trading day profit ÷ Total profit) × 100. For example, if your best day was $600 and your total profit over five days is $2,000, your Consistency Score would be 30%. Spreading profits evenly across days helps achieve a lower, more consistent score.By spreading your profits more evenly, your score stays low, showing consistency in trading performance.",
+            "Your best trading day is $600 (Day 4).",
+            "Your total profit at the end of five days is $2,000.",
+            "The Consistency Score shows how evenly you spread your profits. A lower score means more consistent trading, while a higher score indicates most profits came from one big day. It's calculated as (Best trading day profit ÷ Total profit) × 100. For example, if your best day was $600 and your total profit over five days is $2,000, your Consistency Score would be 30%. Spreading profits evenly across days helps achieve a lower, more consistent score.By spreading your profits more evenly, your score stays low, showing consistency in trading performance."
+          ]
+        }
+      ],
+      "requirements": [],
+      "prohibited": [],
+      "compliance_examples": [
+        {
+          "category": "Understanding Consistency Score: A Quick Example for Traders",
+          "details": [
+            "The Consistency Score measures how evenly you spread your profits over time. A lower score means your profits are more consistent, while a higher score indicates most of your profit came from one big day.",
+            "Here’s the formula:Consistency Score = (Best trading day profit ÷ Total profit) × 100"
+          ]
+        },
+        {
+          "category": "Example: How to Achieve a 35% Consistency Score",
+          "details": [
+            "Let’s assume you trade for five days and aim for a Consistency Score of around 35%. Here’s how your daily profits might look:",
+            "Day",
+            "Daily Profit",
+            "Total Profit",
+            "Consistency Score",
+            "$400",
+            "100.00%",
+            "$300",
+            "$700",
+            "57.14%",
+            "$500",
+            "$1,200",
+            "41.67%",
+            "$600",
+            "$1,800",
+            "33.33%",
+            "$200",
+            "$2,000",
+            "30.00%"
+          ],
+          "table": {
+            "headers": [],
+            "rows": [
+              [
+                "Day",
+                "Daily Profit",
+                "Total Profit",
+                "Consistency Score"
+              ],
+              [
+                "1",
+                "$400",
+                "$400",
+                "100.00%"
+              ],
+              [
+                "2",
+                "$300",
+                "$700",
+                "57.14%"
+              ],
+              [
+                "3",
+                "$500",
+                "$1,200",
+                "41.67%"
+              ],
+              [
+                "4",
+                "$600",
+                "$1,800",
+                "33.33%"
+              ],
+              [
+                "5",
+                "$200",
+                "$2,000",
+                "30.00%"
+              ]
+            ]
+          }
+        }
+      ],
+      "violation_examples": [],
+      "account_details": [
+        {
+          "category": "What are the profit targets for the QT POWER 2-Step Account?",
+          "details": [
+            "The profit targets for each phase are set at 6%"
+          ]
+        },
+        {
+          "category": "What are the drawdown limits for the QT POWER 2-Step Account?",
+          "details": [
+            "Daily Drawdown:",
+            "3% based on End of Day (EOD) Equity",
+            "4% based on End of Day (EOD) Equity(new ruleset for purchases & accounts issued after the 9th of April 2025)",
+            "Max Loss: 8%"
+          ]
+        },
+        {
+          "category": "What is the profit split for traders?",
+          "details": [
+            "The profit split for traders is 80%."
+          ]
+        }
+      ]
+    },
+    "qt-instant": {
+      "name": "qt-instant",
+      "title": "QT INSTANT",
+      "url": "https://qtfunded.kb.help/qt-instant/",
+      "overview": [],
+      "rules": [
+        {
+          "category": "IMPORTANT: READ BEFORE TRADING",
+          "details": [
+            "✅ KYC verification must be completed✅ The contract must be signed⚠️ Trading will only be enabled once both steps are completed"
+          ]
+        },
+        {
+          "category": "1. What is QT INSTANT?",
+          "details": [
+            "QT INSTANT is an instant funding model designed for professional traders who want immediate access to capital without going through an evaluation phase. Unlike traditional evaluation models, QT INSTANT allows traders to start trading on a funded account immediately while adhering to a strict risk management framework to ensure responsible and sustainable trading practices",
+            "By implementing structured drawdown limits, a fair profit-sharing system, and consistency requirements, QT INSTANT ensures that traders can profit while maintaining disciplined trading habits.",
+            "Traders must follow all the outlined rules to maintain their funded account and qualify for withdrawals. This FAQ explains all requirements in detail."
+          ]
+        },
+        {
+          "category": "2. Key Account Rules & Risk Management",
+          "details": [
+            "To ensure responsible trading, QT INSTANT enforces strict risk management policies that traders must follow. These rules promote longevity and discipline while maintaining fair trading conditions."
+          ]
+        },
+        {
+          "category": "Trading Rules",
+          "details": [
+            "Minimum Trading Days: Traders must trade for at least 5 separate trading days before requesting a withdrawal.",
+            "Daily Drawdown: Fixed at 3% of the initial account balance, It does not increase with profits or decrease with losses",
+            "Maximum Drawdown: Trailing 6% from the highest recorded balance or floating equity, ensuring risk-adjusted trading conditions.",
+            "Drawdown on withdrawal - The trailing drawdown islocked at starting balancewhen a withdrawal is made",
+            "FOR ACCOUNTS PURCHASED OR ISSUED AFTER THE 18TH OF SEPTEMBER 2025, THIS REQUIREMENT HAS BEEN REMOVED - DRAWDOWN WILL NO LONGER LOCK AT STARTING BALANCE WHEN A WITHDRAWAL HAS BEEN MADE.",
+            "Consistency Rule: No single trading day’s profit can exceed 25% of total profits at withdrawal time (explained in detail below).",
+            "Layering Rule(Funded Only): Traders cannot have three or more open positions on the same asset at the same time.",
+            "FOR ACCOUNTS PURCHASED OR ISSUED AFTER THE 18TH OF SEPTEMBER 2025, THE LAYERING RULE HAS BEEN REMOVED.",
+            "News Trading Rule(Funded Only): No trading around Red Folder news events, see more information here ->QT News Rule",
+            "MAX RISK RULE: 2% max risk allowed - violation of this is a HARD BREACH",
+            "FOR PAYOUTS AFTER THE 9TH OF APRIL 2025, ACCOUNT RESETS WILL BE ON THE NEW RULESET"
+          ]
+        },
+        {
+          "category": "Withdrawal Conditions",
+          "details": [
+            "Minimum Withdrawal: Traders can only withdraw profits once they make 5%",
+            "Total Profit Required Before First Withdrawal: 5%",
+            "Profit Split: 80% to the trader.",
+            "Withdrawal Frequency: Biweekly.",
+            "Consistency Rule: No single trading day’s profit can exceed 25% of total profits at withdrawal time (explained in detail below).",
+            "These rules ensure a fair and structured trading environment while protecting account capital and encouraging consistent profitability."
+          ]
+        },
+        {
+          "category": "4. What Are the Trading Costs and Leverage?",
+          "details": [
+            "Commission: $2 per lot per side ($4 per round trip) on all instruments for Raw Spreads Accounts.",
+            "Leverage:",
+            "Forex: 1:50",
+            "Indices & Oil: 1:20",
+            "Metals 1:15",
+            "Crypto: 1:1"
+          ]
+        },
+        {
+          "category": "5. How to Reduce Your Consistency Score",
+          "details": [
+            "The Consistency Rule requires that no single day’s profit exceeds 25% of the total profits at withdrawal time. Traders can reduce their consistency score by distributing profits evenly across multiple trading days instead of relying on a single high-profit session.Consistency Score = (Best trading day profit ÷ Total profit) × 100",
+            "Example of Consistency Score Calculation",
+            "Day",
+            "Daily Profit/Loss",
+            "Total Profit",
+            "Largest Profit Day",
+            "Consistency Score (%)",
+            "Eligible for Withdrawal?",
+            "$900",
+            "100%",
+            "❌ No (Too High)",
+            "$850",
+            "$1,750",
+            "51.43%",
+            "-$400",
+            "$1,350",
+            "66.67%",
+            "$600",
+            "$1,950",
+            "46.15%",
+            "$550",
+            "$2,500",
+            "36.00%",
+            "$450",
+            "$3,200",
+            "28.12%",
+            "❌ No (Still High)",
+            "$480",
+            "$3,680",
+            "24.46%",
+            "✅ Yes (Below 25%)",
+            "To qualify for a withdrawal, spread profits over multiple trading days and avoid making too much profit in a single day.",
+            "QT INSTANT is designed for traders who want instant access to funding with structured risk management rules. If you have any further questions, please contact our support team."
+          ],
+          "table": {
+            "headers": [],
+            "rows": [
+              [
+                "Day",
+                "Daily Profit/Loss",
+                "Total Profit",
+                "Largest Profit Day",
+                "Consistency Score (%)",
+                "Eligible for Withdrawal?"
+              ],
+              [
+                "1",
+                "$900",
+                "$900",
+                "$900",
+                "100%",
+                "❌ No (Too High)"
+              ],
+              [
+                "2",
+                "$850",
+                "$1,750",
+                "$900",
+                "51.43%",
+                "❌ No (Too High)"
+              ],
+              [
+                "3",
+                "-$400",
+                "$1,350",
+                "$900",
+                "66.67%",
+                "❌ No (Too High)"
+              ],
+              [
+                "4",
+                "$600",
+                "$1,950",
+                "$900",
+                "46.15%",
+                "❌ No (Too High)"
+              ],
+              [
+                "5",
+                "$550",
+                "$2,500",
+                "$900",
+                "36.00%",
+                "❌ No (Too High)"
+              ],
+              [
+                "9",
+                "$450",
+                "$3,200",
+                "$900",
+                "28.12%",
+                "❌ No (Still High)"
+              ],
+              [
+                "10",
+                "$480",
+                "$3,680",
+                "$900",
+                "24.46%",
+                "✅ Yes (Below 25%)"
+              ]
+            ]
+          }
+        }
+      ],
+      "requirements": [],
+      "prohibited": [],
+      "compliance_examples": [
+        {
+          "category": "Example: Trailing Max Drawdown on a $10,000 Account",
+          "details": [
+            "Highest Recorded Equity/Balance",
+            "Trailing Max Drawdown (Always 6% or $600 Below)",
+            "$10,000 (Starting Balance)",
+            "$9,400 (Initial Max Drawdown)",
+            "$10,500",
+            "$9,900",
+            "$11,000",
+            "$10,400",
+            "$11,500",
+            "$10,900",
+            "$12,000",
+            "$11,400",
+            "Trailing Max Drawdown always moves up in fixed steps of $600 (6% of $10,000 initial balance).",
+            "It never moves down, even if the trader loses profits."
+          ],
+          "table": {
+            "headers": [],
+            "rows": [
+              [
+                "Highest Recorded Equity/Balance",
+                "Trailing Max Drawdown (Always 6% or $600 Below)"
+              ],
+              [
+                "$10,000 (Starting Balance)",
+                "$9,400 (Initial Max Drawdown)"
+              ],
+              [
+                "$10,500",
+                "$9,900"
+              ],
+              [
+                "$11,000",
+                "$10,400"
+              ],
+              [
+                "$11,500",
+                "$10,900"
+              ],
+              [
+                "$12,000",
+                "$11,400"
+              ]
+            ]
+          }
+        }
+      ],
+      "violation_examples": [],
+      "account_details": [
+        {
+          "category": "Daily Drawdown (Fixed 3%)",
+          "details": [
+            "The daily drawdown is fixed at 3% of the initial account balance and resets every trading day.",
+            "It does NOT increase if the account is in profit and does NOT decrease if the account is in drawdown.",
+            "It Is is based on the highest recorded equity/balance from the previous day.",
+            "Example: Daily Drawdown on a $10,000 Account",
+            "Daily Drawdown is always $300 (3% of $10,000).",
+            "The account can never drop below $9,700 within a single trading day.",
+            "Even if the balance increases to $12,000, the daily drawdown remains fixed at $300 per day."
+          ]
+        },
+        {
+          "category": "Maximum Drawdown (Trailing 6%)",
+          "details": [
+            "The Maximum Drawdown follows the highest recorded balance or floating equity and moves up as profits increase.",
+            "It always trails the highest recorded balance by 6% of the starting balance (e.g., $600 on a $10,000 account).",
+            "Once the Max Drawdown moves up, it never moves back down—even if the trader loses profits."
+          ]
+        }
+      ]
+    }
+  },
+  "scraped_at": "2025-11-14T19:07:04.315639"
+}
