@@ -753,7 +753,11 @@ class ForexFactoryScraper:
                     if current_time:
                         utc_result = self.convert_to_utc(current_time, utc_offset, date_iso=date_iso, return_date=True)
                         if isinstance(utc_result, tuple):
-                            time_utc, date_utc = utc_result
+                            maybe_time, maybe_date = utc_result
+                            if maybe_time:
+                                time_utc = maybe_time
+                            if maybe_date:
+                                date_utc = maybe_date
                         else:
                             time_utc = utc_result
                     event_uid = self.generate_event_uid(date_iso, currency, event_title)
