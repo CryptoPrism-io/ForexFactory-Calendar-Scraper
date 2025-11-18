@@ -371,10 +371,10 @@ class ForexFactoryScraper:
         options.add_argument("--disable-plugins")
         options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
 
-        # Add headless mode for CI/CD environments (GitHub Actions)
+        # CI/CD environments use Xvfb virtual display instead of headless mode
+        # This helps bypass Cloudflare detection
         if os.getenv('CI') or os.getenv('GITHUB_ACTIONS'):
-            options.add_argument("--headless=new")
-            logger.info("Running in headless mode (CI/CD detected)")
+            logger.info("Running with virtual display (CI/CD detected, using Xvfb on DISPLAY={})".format(os.getenv('DISPLAY', ':99')))
 
         max_retries = 3
         for attempt in range(max_retries):
