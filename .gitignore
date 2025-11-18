@@ -1,0 +1,28 @@
+# Environment & secrets
+.env
+*.env
+env.yaml
+env.yml
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Generated outputs
+csv_output/
+scraper_2.2/csv_output/
+today/csv_output/
+
+# Python artifacts
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+
+# OS junk
+.DS_Store
+Thumbs.db

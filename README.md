@@ -77,6 +77,13 @@ PostgreSQL Database + CSV Output
 
 For detailed setup instructions, see [scraper_2.2/README.md](scraper_2.2/README.md).
 
+## Environment & Secrets
+
+- Copy `scraper_2.2/.env.example` to `.env` for the Python jobs and fill it with **local** values. Keep `.env` out of git (already ignored).
+- Frontend/dashboard consumers can copy `env.template.yaml` to `env.yaml` and populate the same variables (`VITE_API_BASE_URL`, `POSTGRES_*`, `NODE_ENV`, etc.). `env.yaml` is ignored globally so real credentials never end up in commits.
+- In CI, provide the same values as GitHub Secrets (`POSTGRES_HOST`, `POSTGRES_DB`, ...). Never check actual hostnames, usernames, or passwords into documentation.
+- If a secret value was ever committed, rotate that credential immediately and force-push the scrubbed history.
+
 ## Database
 
 The system uses PostgreSQL with these main tables:

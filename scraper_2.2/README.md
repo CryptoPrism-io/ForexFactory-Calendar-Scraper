@@ -78,6 +78,8 @@ POSTGRES_USER=postgres
 POSTGRES_PASSWORD=your_secure_password
 ```
 
+> ⚠️ Copy `.env.example` to `.env` (or `env.template.yaml` to `env.yaml` if another service consumes YAML) and keep the populated files out of source control. In CI/CD, provide the same values via repository secrets—never hard-code real credentials in documentation.
+
 ### 2. Install Dependencies
 
 ```bash

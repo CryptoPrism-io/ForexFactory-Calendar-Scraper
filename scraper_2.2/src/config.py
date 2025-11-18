@@ -12,6 +12,38 @@ from dotenv import load_dotenv
 logger = logging.getLogger(__name__)
 
 
+def _mask_value(value):
+    """Return a lightly masked representation of a credential"""
+    if not value:
+        return "***"
+    if len(value) <= 2:
+        return f"{value[0]}*" if len(value) == 2 else "*"
+    return f"{value[0]}***{value[-1]}"
+
+
+def mask_host(host):
+    """Mask the final segment of an IP/domain so logs don't reveal the exact target"""
+    if not host:
+        return "***"
+    parts = host.split('.')
+    if len(parts) == 4 and all(part.isdigit() for part in parts if part):
+        parts[-1] = "***"
+        return '.'.join(parts)
+    if len(parts) > 1:
+        parts[-1] = "***"
+        return '.'.join(parts)
+    if len(host) <= 4:
+        return host[0] + "**"
+    return f"{host[:2]}***{host[-1:]}"
+
+
+def describe_db_target(host, port, database, user=None):
+    """Generate a masked DSN string suitable for logging"""
+    masked_host = mask_host(host)
+    user_part = f"{_mask_value(user)}@" if user else ""
+    return f"{user_part}{masked_host}:{port}/{database}"
+
+
 class Config:
     """Configuration manager for ForexFactory pipeline"""
 
@@ -82,12 +114,21 @@ class Config:
         """String representation of configuration"""
         return f"""
 ForexFactory Configuration:
-  Database: {self.POSTGRES_USER}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}
+  Database: {self.describe_db()}
   Output Mode: {self.OUTPUT_MODE}
   CSV Output Dir: {self.CSV_OUTPUT_DIR}
   Log Level: {self.LOG_LEVEL}
   Scraper Verbose: {self.SCRAPER_VERBOSE}
         """
+
+    def describe_db(self):
+        """Return masked connection description for safe logging"""
+        return describe_db_target(
+            self.POSTGRES_HOST,
+            self.POSTGRES_PORT,
+            self.POSTGRES_DB,
+            self.POSTGRES_USER
+        )
 
 
 def get_config(env_file=None):

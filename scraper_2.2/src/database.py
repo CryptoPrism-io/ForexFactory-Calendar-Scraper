@@ -10,6 +10,7 @@ from datetime import datetime
 from contextlib import contextmanager
 import psycopg2
 from psycopg2 import sql, pool, extras
+from config import describe_db_target
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,10 @@ class DatabaseManager:
                 user=user,
                 password=password
             )
-            logger.info(f"Database connection pool created: {database}@{host}")
+            logger.info(
+                f"Database connection pool created: "
+                f"{describe_db_target(host, port, database, user)}"
+            )
         except Exception as e:
             logger.error(f"Failed to create connection pool: {e}")
             raise

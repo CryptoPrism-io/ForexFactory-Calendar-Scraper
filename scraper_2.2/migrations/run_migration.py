@@ -9,8 +9,11 @@ import sys
 import logging
 import psycopg2
 from pathlib import Path
-from datetime import datetime
 from dotenv import load_dotenv
+
+# Add src to path for shared config helpers
+sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
+from config import describe_db_target
 
 # Load .env file
 env_file = Path(__file__).parent.parent / '.env'
@@ -41,7 +44,10 @@ class MigrationRunner:
                 user=self.user,
                 password=self.password
             )
-            logger.info(f"Connected to database: {self.database}@{self.host}")
+            logger.info(
+                f"Connected to database: "
+                f"{describe_db_target(self.host, self.port, self.database, self.user)}"
+            )
             return True
         except Exception as e:
             logger.error(f"Failed to connect to database: {e}")
@@ -107,7 +113,7 @@ def main():
     print("\n" + "="*60)
     print("FOREXFACTORY DATABASE MIGRATION RUNNER")
     print("="*60)
-    print(f"Database: {database}@{host}:{port}")
+    print(f"Database: {describe_db_target(host, port, database, user)}")
     print(f"Migration Directory: {migration_dir}")
     print("="*60 + "\n")
 

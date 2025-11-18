@@ -86,7 +86,7 @@ def main():
 
     # Load configuration
     config = get_config()
-    logger.info(f"Database: {config.POSTGRES_USER}@{config.POSTGRES_HOST}:{config.POSTGRES_PORT}/{config.POSTGRES_DB}")
+    logger.info(f"Database: {config.describe_db()}")
     logger.info(f"Output Mode: {config.OUTPUT_MODE}")
 
     # Initialize database
