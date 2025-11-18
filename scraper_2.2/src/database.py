@@ -173,12 +173,6 @@ class DatabaseManager:
                 time_utc = EXCLUDED.time_utc,
                 date_utc = EXCLUDED.date_utc,
                 last_updated = CURRENT_TIMESTAMP
-            WHERE (
-                EXCLUDED.actual IS DISTINCT FROM Economic_Calendar_FF.actual OR
-                EXCLUDED.forecast IS DISTINCT FROM Economic_Calendar_FF.forecast OR
-                EXCLUDED.previous IS DISTINCT FROM Economic_Calendar_FF.previous OR
-                EXCLUDED.actual_status IS DISTINCT FROM Economic_Calendar_FF.actual_status
-            )
         """
 
         try:

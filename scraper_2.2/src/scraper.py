@@ -6,12 +6,14 @@ Uses CSS selectors to read HTML semantic structure, not text guessing
 Supports URL parameter: ?day=today, ?week=this, ?month=last|this|next
 """
 
+import os
 import time
 import re
 import hashlib
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 try:
     import undetected_chromedriver as uc
@@ -36,6 +38,17 @@ class ForexFactoryScraper:
         self.driver = None
         self.verbose = verbose
         self.today_date = datetime.now().strftime("%a %b %d")
+        self.forced_timezone = os.getenv('SCRAPER_FORCE_TIMEZONE', 'America/Los_Angeles').strip()
+        if self.forced_timezone.lower() in ('', 'auto'):
+            self.forced_timezone = ""
+        self.forced_zoneinfo = None
+        self.active_zoneinfo = None
+        if self.forced_timezone:
+            try:
+                self.forced_zoneinfo = ZoneInfo(self.forced_timezone)
+            except Exception as exc:
+                logger.warning(f"Unable to load timezone {self.forced_timezone}: {exc}")
+                self.forced_timezone = ""
 
     # ===== HELPER FUNCTIONS: Semantic HTML Extraction =====
 
@@ -46,6 +59,15 @@ class ForexFactoryScraper:
         Example: ("GMT", 0), ("EST", -5), ("IST", 5.5)
         """
         try:
+            if self.forced_zoneinfo:
+                now_local = datetime.now(self.forced_zoneinfo)
+                self.active_zoneinfo = self.forced_zoneinfo
+                offset_hours = now_local.utcoffset().total_seconds() / 3600
+                tz_label = now_local.tzname() or self.forced_timezone
+                logger.info(f"Using forced timezone {self.forced_timezone} ({tz_label})")
+                return tz_label, offset_hours
+
+            self.active_zoneinfo = None
             tz_label, tz_offset = self.extract_timezone_from_settings(page_source)
             if tz_label is not None and tz_offset is not None:
                 return tz_label, tz_offset
@@ -243,7 +265,7 @@ class ForexFactoryScraper:
         except ValueError:
             return None
 
-    def convert_to_utc(self, time_str, source_tz_offset, date_iso=None, return_date=False):
+    def convert_to_utc(self, time_str, source_tz_offset, date_iso=None, return_date=False, zoneinfo_obj=None):
         """
         Convert time from source timezone to UTC
         Args:
@@ -285,6 +307,21 @@ class ForexFactoryScraper:
             else:
                 # Not a standard clock time, keep the original value
                 return (time_str, date_iso) if return_date else time_str
+
+            if zoneinfo_obj and date_iso:
+                try:
+                    base_date = datetime.strptime(date_iso, "%Y-%m-%d")
+                    local_dt = base_date.replace(hour=parsed_time.hour, minute=parsed_time.minute, tzinfo=zoneinfo_obj)
+                    utc_dt = local_dt.astimezone(timezone.utc)
+                    utc_time_str = utc_dt.strftime("%H:%M")
+                    date_utc = utc_dt.strftime("%Y-%m-%d")
+                    tz_label = local_dt.tzname()
+                    if return_date:
+                        result = (utc_time_str, date_utc, tz_label)
+                        return result
+                    return utc_time_str
+                except Exception as inner_ex:
+                    logger.debug(f"ZoneInfo conversion failed for '{time_str}': {inner_ex}")
 
             utc_time = parsed_time - timedelta(hours=source_tz_offset)
             utc_time_str = utc_time.strftime("%H:%M")
@@ -706,6 +743,7 @@ class ForexFactoryScraper:
 
             logger.info("\nDetecting timezone...")
             detected_tz, utc_offset = self.detect_timezone(soup, driver.page_source)
+            zoneinfo_obj = self.active_zoneinfo
             logger.info(f"Timezone: {detected_tz} (UTC{utc_offset:+.1f})\n")
 
             current_date = self.today_date
@@ -750,23 +788,41 @@ class ForexFactoryScraper:
                     date_iso = self.parse_date_to_iso(current_date, period)
                     time_utc = ""
                     date_utc = date_iso
+                    event_time_zone = detected_tz
+
                     if current_time:
-                        utc_result = self.convert_to_utc(current_time, utc_offset, date_iso=date_iso, return_date=True)
+                        utc_result = self.convert_to_utc(
+                            current_time,
+                            utc_offset,
+                            date_iso=date_iso,
+                            return_date=True,
+                            zoneinfo_obj=zoneinfo_obj
+                        )
                         if isinstance(utc_result, tuple):
-                            maybe_time, maybe_date = utc_result
-                            if maybe_time:
-                                time_utc = maybe_time
-                            if maybe_date:
-                                date_utc = maybe_date
+                            if len(utc_result) == 3:
+                                maybe_time, maybe_date, maybe_label = utc_result
+                                if maybe_time:
+                                    time_utc = maybe_time
+                                if maybe_date:
+                                    date_utc = maybe_date
+                                if maybe_label:
+                                    event_time_zone = maybe_label
+                            elif len(utc_result) == 2:
+                                maybe_time, maybe_date = utc_result
+                                if maybe_time:
+                                    time_utc = maybe_time
+                                if maybe_date:
+                                    date_utc = maybe_date
                         else:
                             time_utc = utc_result
+
                     event_uid = self.generate_event_uid(date_iso, currency, event_title)
 
                     event = {
                         'event_uid': event_uid,
                         'date': date_iso,
                         'time': current_time,
-                        'time_zone': detected_tz,
+                        'time_zone': event_time_zone,
                         'time_utc': time_utc,
                         'date_utc': date_utc,
                         'currency': currency,
