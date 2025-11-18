@@ -1,9 +1,9 @@
-name: ForexFactory Realtime Update (15 Minutes)
+name: ForexFactory Realtime Update (5 Minutes)
 
 on:
   schedule:
-    # Run every 15 minutes (0, 15, 30, 45 minutes past each hour)
-    - cron: '*/15 * * * *'
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:

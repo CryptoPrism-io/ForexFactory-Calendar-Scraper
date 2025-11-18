@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-ForexFactory Realtime Update Job (Every 15 Minutes)
-Scrapes ?day=today and updates the database with latest Actual values
+ForexFactory Realtime Update Job (Every 5 Minutes)
+Scrapes ?week=this and updates the database with latest Actual values
 """
 
 import sys
@@ -77,7 +77,7 @@ def main():
     run_id = str(uuid.uuid4())[:8]
 
     logger.info("="*70)
-    logger.info("FOREXFACTORY REALTIME UPDATE JOB (15-MINUTE INTERVAL)")
+    logger.info("FOREXFACTORY REALTIME UPDATE JOB (5-MINUTE INTERVAL)")
     logger.info("="*70)
     logger.info(f"Run ID: {run_id}")
     logger.info(f"Start Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
