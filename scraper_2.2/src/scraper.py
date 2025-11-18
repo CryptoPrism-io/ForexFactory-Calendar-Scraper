@@ -46,6 +46,10 @@ class ForexFactoryScraper:
         Example: ("GMT", 0), ("EST", -5), ("IST", 5.5)
         """
         try:
+            tz_label, tz_offset = self.extract_timezone_from_settings(page_source)
+            if tz_label is not None and tz_offset is not None:
+                return tz_label, tz_offset
+
             # Method 1: Search for timezone text in page
             timezone_patterns = [
                 r'Times are in (\w+)',
@@ -56,9 +60,14 @@ class ForexFactoryScraper:
             ]
 
             for pattern in timezone_patterns:
-                matches = re.findall(pattern, page_source, re.IGNORECASE)
-                if matches and self.verbose:
-                    logger.debug(f"Found timezone pattern: {matches}")
+                match = re.search(pattern, page_source, re.IGNORECASE)
+                if match:
+                    tz_candidate = match.group(1).upper()
+                    offset_val = self.lookup_offset_from_label(tz_candidate)
+                    if offset_val is None and match.lastindex and match.lastindex >= 2:
+                        offset_val = self.parse_offset_string(match.group(2))
+                    if offset_val is not None:
+                        return tz_candidate, offset_val
 
             # Method 2: Check HTML for explicit timezone indicators
             footer = soup.find('footer')
@@ -67,13 +76,15 @@ class ForexFactoryScraper:
             for section in [footer, header]:
                 if section:
                     text = section.get_text().lower()
-                    if 'gmt' in text:
+                    if re.search(r'\bgmt\b', text):
                         return "GMT", 0
-                    elif 'est' in text or 'edt' in text:
+                    elif re.search(r'\best\b', text):
                         return "EST", -5
-                    elif 'utc' in text:
+                    elif re.search(r'\bedt\b', text):
+                        return "EDT", -4
+                    elif re.search(r'\butc\b', text):
                         return "UTC", 0
-                    elif 'ist' in text:
+                    elif re.search(r'\bist\b', text):
                         return "IST", 5.5
 
             # Method 3: Look for meta tags
@@ -111,6 +122,126 @@ class ForexFactoryScraper:
         except Exception as e:
             logger.error(f"Error detecting timezone: {e}")
             return "GMT", 0
+
+    def extract_timezone_from_settings(self, page_source):
+        """Parse timezone info from embedded FF settings scripts"""
+        try:
+            timezone_match = re.search(r"timezone:\s*'([^']+)'", page_source)
+            tz_name_match = re.search(r"timezone_name:\s*'([^']+)'", page_source)
+            user_tz_match = re.search(r"'User Timezone':\s*'([^']+)'", page_source)
+
+            tz_offset = None
+            if timezone_match:
+                offset_str = timezone_match.group(1).strip()
+                offset_str = offset_str.replace('+', '')
+                offset_str = re.sub(r'[^0-9\.\-]', '', offset_str)
+                if offset_str:
+                    tz_offset = float(offset_str)
+
+            tz_name = None
+            if tz_name_match:
+                tz_name = tz_name_match.group(1).strip()
+            elif user_tz_match:
+                tz_name = user_tz_match.group(1).strip()
+
+            if tz_offset is not None:
+                tz_label = self.format_timezone_label(tz_name, tz_offset)
+                return tz_label, tz_offset
+        except Exception as e:
+            logger.debug(f"Unable to parse timezone from scripts: {e}")
+
+        return None, None
+
+    def lookup_offset_from_label(self, label):
+        """Map known timezone abbreviations to offsets"""
+        label = label.upper()
+        lookup = {
+            "GMT": 0,
+            "UTC": 0,
+            "IST": 5.5,
+            "BST": 1,
+            "CET": 1,
+            "CEST": 2,
+            "EET": 2,
+            "EEST": 3,
+            "EST": -5,
+            "EDT": -4,
+            "CST": -6,
+            "CDT": -5,
+            "MST": -7,
+            "MDT": -6,
+            "PST": -8,
+            "PDT": -7,
+            "JST": 9,
+            "AEST": 10,
+            "AEDT": 11,
+            "NZT": 12,
+        }
+        return lookup.get(label)
+
+    def format_timezone_label(self, tz_name, offset):
+        """Generate friendly label for timezone"""
+        name_map = {
+            "Asia/Kolkata": "IST",
+            "Asia/Calcutta": "IST",
+            "Etc/UTC": "UTC",
+            "UTC": "UTC",
+            "Europe/London": "GMT",
+            "Europe/Berlin": "CET",
+            "America/New_York": "EST",
+            "America/Chicago": "CST",
+            "America/Denver": "MST",
+            "America/Los_Angeles": "PST",
+            "Asia/Tokyo": "JST",
+            "Australia/Sydney": "AEST",
+            "Australia/Melbourne": "AEST",
+        }
+
+        rounded_offset = round(offset, 2)
+        offset_map = {
+            0.0: "UTC",
+            5.5: "IST",
+            -5.0: "EST",
+            -4.0: "EDT",
+            -6.0: "CST",
+            -7.0: "MST",
+            -8.0: "PST",
+            1.0: "CET",
+            2.0: "EET",
+            9.0: "JST",
+            10.0: "AEST",
+            11.0: "AEDT",
+        }
+
+        if tz_name:
+            normalized = tz_name.strip()
+            if normalized in name_map:
+                return name_map[normalized]
+            if '/' in normalized:
+                candidate = normalized.split('/')[-1]
+                if len(candidate) <= 5:
+                    return candidate.upper()
+
+        if rounded_offset in offset_map:
+            return offset_map[rounded_offset]
+
+        sign = "+" if rounded_offset >= 0 else "-"
+        return f"UTC{sign}{abs(rounded_offset):g}"
+
+    def parse_offset_string(self, offset_str):
+        """Convert textual UTC offset (e.g., +5:30) into float hours"""
+        if not offset_str:
+            return None
+        cleaned = offset_str.strip().replace('UTC', '').replace('+', '')
+        sign = -1 if offset_str.strip().startswith('-') else 1
+        cleaned = cleaned.lstrip('-')
+        parts = cleaned.split(':')
+        try:
+            hours = float(parts[0]) if parts[0] else 0
+            minutes = float(parts[1]) / 60 if len(parts) > 1 else 0
+            return sign * (abs(hours) + minutes)
+        except ValueError:
+            return None
 
     def convert_to_utc(self, time_str, source_tz_offset):
         """
