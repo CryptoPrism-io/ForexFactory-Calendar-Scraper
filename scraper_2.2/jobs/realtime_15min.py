@@ -42,7 +42,7 @@ def save_events_to_csv(events, config):
     from datetime import datetime
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    csv_filename = f"today_{timestamp}.csv"
+    csv_filename = f"week_{timestamp}.csv"
 
     output_dir = Path(config.CSV_OUTPUT_DIR) / 'realtime'
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -96,12 +96,12 @@ def main():
         logger.error(f"Failed to initialize database: {e}")
         return 1
 
-    # Scrape today's events
-    logger.info("\nScraping today's events from ForexFactory...")
+    # Scrape this week's events
+    logger.info("\nScraping this week's events from ForexFactory...")
     scraper = ForexFactoryScraper(verbose=config.SCRAPER_VERBOSE)
 
     try:
-        if not scraper.scrape_period("day=today"):
+        if not scraper.scrape_period("week=this"):
             logger.error("Scraping failed")
             db.log_sync_complete(log_id, 0, 0, 0, errors=1, error_message="Scraping failed")
             return 1
@@ -127,7 +127,7 @@ def main():
     # UPSERT to database
     logger.info("\nUpserting events to database...")
     try:
-        inserted, updated, processed = db.upsert_events(events, source_scope='day')
+        inserted, updated, processed = db.upsert_events(events, source_scope='week')
         logger.info(f"UPSERT Results: {inserted} inserted, {updated} updated, {processed} processed")
 
         # Log completion
