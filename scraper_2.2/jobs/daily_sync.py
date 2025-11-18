@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ForexFactory Daily Sync Job (Once Per Day at 02:00 UTC)
-Scrapes ?week=this and updates the database with weekly events
+Scrapes ?month=this and updates the database with monthly events
 """
 
 import sys
@@ -42,7 +42,7 @@ def save_events_to_csv(events, config):
     from datetime import datetime
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    csv_filename = f"week_this_{timestamp}.csv"
+    csv_filename = f"month_this_{timestamp}.csv"
 
     output_dir = Path(config.CSV_OUTPUT_DIR) / 'daily'
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -77,7 +77,7 @@ def main():
     run_id = str(uuid.uuid4())[:8]
 
     logger.info("="*70)
-    logger.info("FOREXFACTORY DAILY SYNC JOB (WEEK VIEW)")
+    logger.info("FOREXFACTORY DAILY SYNC JOB (MONTH VIEW)")
     logger.info("="*70)
     logger.info(f"Run ID: {run_id}")
     logger.info(f"Start Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -96,12 +96,12 @@ def main():
         logger.error(f"Failed to initialize database: {e}")
         return 1
 
-    # Scrape this week's events
-    logger.info("\nScraping this week's events from ForexFactory...")
+    # Scrape this month's events
+    logger.info("\nScraping this month's events from ForexFactory...")
     scraper = ForexFactoryScraper(verbose=config.SCRAPER_VERBOSE)
 
     try:
-        if not scraper.scrape_period("week=this"):
+        if not scraper.scrape_period("month=this"):
             logger.error("Scraping failed")
             db.log_sync_complete(log_id, 0, 0, 0, errors=1, error_message="Scraping failed")
             return 1
@@ -127,7 +127,7 @@ def main():
     # UPSERT to database
     logger.info("\nUpserting events to database...")
     try:
-        inserted, updated, processed = db.upsert_events(events, source_scope='week')
+        inserted, updated, processed = db.upsert_events(events, source_scope='month')
         logger.info(f"UPSERT Results: {inserted} inserted, {updated} updated, {processed} processed")
 
         # Log completion

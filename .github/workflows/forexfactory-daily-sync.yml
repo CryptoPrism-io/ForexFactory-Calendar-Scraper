@@ -1,4 +1,4 @@
-name: ForexFactory Daily Sync (Week View)
+name: ForexFactory Daily Sync (Month View)
 
 on:
   schedule:
