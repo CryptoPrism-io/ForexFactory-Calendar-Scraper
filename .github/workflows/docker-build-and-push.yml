@@ -37,11 +37,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase image name
+        id: lowercase
+        run: echo "IMAGE_NAME_LOWER=$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME | lower }}
+          images: ${{ env.REGISTRY }}/${{ steps.lowercase.outputs.IMAGE_NAME_LOWER }}
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
