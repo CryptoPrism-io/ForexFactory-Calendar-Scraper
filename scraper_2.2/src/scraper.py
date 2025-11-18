@@ -121,23 +121,44 @@ class ForexFactoryScraper:
         Returns:
             utc_time_str: Time in UTC in 24-hour format (HH:MM)
         """
-        if not time_str or time_str in ['All Day', 'Tentative', 'Day', 'off']:
+        if not time_str:
             return time_str
 
+        normalized = time_str.strip()
+        lowered = normalized.lower()
+
+        special_tokens = {'all day', 'tentative', 'day', 'off'}
+        if lowered in special_tokens:
+            return time_str
+
+        # Ignore session labels like "Day 1" or ranges like "19th-24th"
+        non_clock_patterns = [
+            r'^\d+(st|nd|rd|th)(\s*-\s*\d+(st|nd|rd|th))?$',
+            r'^day\s+\d+',
+        ]
+        for pattern in non_clock_patterns:
+            if re.match(pattern, lowered):
+                return time_str
+
         try:
+            cleaned = lowered.replace(" ", "")
             parsed_time = None
 
-            if 'am' in time_str.lower() or 'pm' in time_str.lower():
-                clean_time = re.sub(r'\s+', '', time_str.lower())
-                parsed_time = datetime.strptime(clean_time, "%I:%M%p")
+            if re.match(r'^\d{1,2}:\d{2}(am|pm)$', cleaned):
+                parsed_time = datetime.strptime(cleaned, "%I:%M%p")
+            elif re.match(r'^\d{1,2}:\d{2}$', cleaned):
+                parsed_time = datetime.strptime(cleaned, "%H:%M")
+            elif re.match(r'^\d{1,2}(am|pm)$', cleaned):
+                parsed_time = datetime.strptime(cleaned, "%I%p")
             else:
-                parsed_time = datetime.strptime(time_str.strip(), "%H:%M")
+                # Not a standard clock time, keep the original value
+                return time_str
 
             utc_time = parsed_time - timedelta(hours=source_tz_offset)
             return utc_time.strftime("%H:%M")
 
         except Exception as e:
-            logger.error(f"Error converting time '{time_str}' to UTC: {e}")
+            logger.debug(f"Skipping UTC conversion for '{time_str}': {e}")
             return time_str
 
     def extract_impact(self, impact_cell):

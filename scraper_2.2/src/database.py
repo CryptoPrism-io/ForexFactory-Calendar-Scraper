@@ -33,9 +33,75 @@ class DatabaseManager:
                 f"Database connection pool created: "
                 f"{describe_db_target(host, port, database, user)}"
             )
+            self.ensure_schema()
         except Exception as e:
             logger.error(f"Failed to create connection pool: {e}")
             raise
+
+    def ensure_schema(self):
+        """Ensure required tables, columns, and indexes exist before operations"""
+        schema_statements = [
+            """
+            CREATE TABLE IF NOT EXISTS economic_calendar_ff (
+                id SERIAL PRIMARY KEY,
+                event_uid TEXT,
+                date VARCHAR(32),
+                time VARCHAR(32),
+                time_zone VARCHAR(10) DEFAULT 'GMT',
+                time_utc VARCHAR(20),
+                currency VARCHAR(16),
+                impact VARCHAR(16),
+                event TEXT,
+                actual VARCHAR(64),
+                actual_status VARCHAR(20),
+                forecast VARCHAR(64),
+                previous VARCHAR(64),
+                source_scope VARCHAR(32) DEFAULT 'unknown',
+                created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+                last_updated TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+            );
+            """,
+            "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS event_uid TEXT;",
+            "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS time_zone VARCHAR(10) DEFAULT 'GMT';",
+            "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS time_utc VARCHAR(20);",
+            "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS actual_status VARCHAR(20);",
+            "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS source_scope VARCHAR(32) DEFAULT 'unknown';",
+            "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;",
+            "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS last_updated TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;",
+            """
+            CREATE TABLE IF NOT EXISTS sync_log (
+                id SERIAL PRIMARY KEY,
+                job_name VARCHAR(64),
+                job_type VARCHAR(32),
+                run_id VARCHAR(64),
+                start_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+                end_time TIMESTAMPTZ,
+                processed INTEGER DEFAULT 0,
+                inserted INTEGER DEFAULT 0,
+                updated INTEGER DEFAULT 0,
+                errors INTEGER DEFAULT 0,
+                error_message TEXT
+            );
+            """,
+            """
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_economic_calendar_ff_event_uid_unique
+            ON economic_calendar_ff(event_uid);
+            """,
+            """
+            CREATE INDEX IF NOT EXISTS idx_economic_calendar_ff_date_currency
+            ON economic_calendar_ff(date, currency);
+            """,
+            """
+            CREATE INDEX IF NOT EXISTS idx_economic_calendar_ff_source_scope
+            ON economic_calendar_ff(source_scope);
+            """
+        ]
+
+        with self.get_connection() as conn:
+            with conn.cursor() as cursor:
+                for statement in schema_statements:
+                    cursor.execute(statement)
+            conn.commit()
 
     @contextmanager
     def get_connection(self):
