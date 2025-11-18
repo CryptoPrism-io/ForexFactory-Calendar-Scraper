@@ -18,6 +18,7 @@ try:
     from selenium.webdriver.common.by import By
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
+    from selenium.common.exceptions import TimeoutException
     from bs4 import BeautifulSoup
 except ImportError:
     raise ImportError("Missing required packages. Install with: pip install -r requirements.txt")
@@ -357,11 +358,63 @@ class ForexFactoryScraper:
             logger.error(f"Error generating event_uid: {e}")
             return None
 
+    def is_cloudflare_challenge(self, page_source):
+        """Detect Cloudflare challenge markers in HTML"""
+        if not page_source:
+            return False
+
+        lowered = page_source.lower()
+        challenge_markers = [
+            "cf-browser-verification",
+            "cf-chl-bypass",
+            "challenge-form",
+            "cf-please-wait",
+            "just a moment",
+            "cloudflare",
+        ]
+        return any(marker in lowered for marker in challenge_markers)
+
+    def wait_for_calendar_ready(self, driver, timeout=120, poll_interval=3):
+        """
+        Wait for the ForexFactory calendar table to appear while handling Cloudflare challenge pages.
+        Returns True when rows are detected, False if timeout is reached.
+        """
+        end_time = time.time() + timeout
+        challenge_logged = False
+
+        while time.time() < end_time:
+            page_source = driver.page_source
+
+            if self.is_cloudflare_challenge(page_source):
+                if not challenge_logged:
+                    logger.info("Cloudflare challenge detected, waiting for clearance...")
+                    challenge_logged = True
+                time.sleep(poll_interval)
+                continue
+
+            try:
+                WebDriverWait(driver, poll_interval).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "table.calendar__table"))
+                )
+                WebDriverWait(driver, poll_interval).until(
+                    lambda d: len(d.find_elements(By.CLASS_NAME, "calendar__row")) > 0
+                )
+                logger.info("Calendar table detected with rows present")
+                return True
+            except TimeoutException:
+                if self.verbose:
+                    logger.debug("Calendar not ready yet, retrying...")
+                time.sleep(poll_interval)
+
+        logger.warning("Cloudflare challenge/ calendar rendering did not finish before timeout")
+        return False
+
     def get_driver(self):
         """Create undetected Chrome driver with Cloudflare bypass"""
         import os
 
         options = uc.ChromeOptions()
+        options.headless = False  # Force real browser window to avoid Cloudflare headless blocking
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
@@ -371,10 +424,17 @@ class ForexFactoryScraper:
         options.add_argument("--disable-plugins")
         options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
 
-        # CI/CD environments use Xvfb virtual display instead of headless mode
-        # This helps bypass Cloudflare detection
-        if os.getenv('CI') or os.getenv('GITHUB_ACTIONS'):
-            logger.info("Running with virtual display (CI/CD detected, using Xvfb on DISPLAY={})".format(os.getenv('DISPLAY', ':99')))
+        running_ci = os.getenv('CI') or os.getenv('GITHUB_ACTIONS')
+        if running_ci:
+            display = os.getenv('DISPLAY')
+            if not display:
+                os.environ['DISPLAY'] = ':99'
+                display = ':99'
+                logger.info("DISPLAY not set, defaulting to virtual display :99 for CI environment")
+
+            # CI/CD environments use Xvfb virtual display instead of headless mode
+            # This helps bypass Cloudflare detection
+            logger.info(f"Running with virtual display (CI/CD detected, using Xvfb on DISPLAY={display})")
 
         max_retries = 3
         for attempt in range(max_retries):
@@ -426,17 +486,9 @@ class ForexFactoryScraper:
             logger.info("Loading page...")
             driver.get(url)
 
-            logger.info("Waiting for Cloudflare challenge...")
-            time.sleep(3)
-
-            try:
-                WebDriverWait(driver, 10).until(
-                    lambda d: len(d.find_elements(By.CLASS_NAME, "calendar__row")) > 0 or
-                              "Just a moment" not in d.page_source
-                )
-                logger.info("Page loaded successfully")
-            except Exception as e:
-                logger.warning(f"Timeout waiting for content: {e}")
+            logger.info("Waiting for Cloudflare challenge / calendar readiness...")
+            if not self.wait_for_calendar_ready(driver):
+                logger.warning("Page never confirmed calendar readiness; proceeding with whatever HTML is available")
 
             time.sleep(2)
 
