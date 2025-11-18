@@ -52,7 +52,7 @@ def save_events_to_csv(events, config, period_name):
     try:
         # Map database field names to CSV field names
         csv_fieldnames = [
-            'date', 'time', 'time_zone', 'time_utc', 'currency',
+            'date', 'date_utc', 'time', 'time_zone', 'time_utc', 'currency',
             'impact', 'event', 'actual', 'actual_status', 'forecast', 'previous'
         ]
 

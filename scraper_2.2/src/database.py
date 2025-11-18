@@ -46,6 +46,7 @@ class DatabaseManager:
                 id SERIAL PRIMARY KEY,
                 event_uid TEXT,
                 date VARCHAR(32),
+                date_utc DATE,
                 time VARCHAR(32),
                 time_zone VARCHAR(10) DEFAULT 'GMT',
                 time_utc VARCHAR(20),
@@ -64,6 +65,7 @@ class DatabaseManager:
             "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS event_uid TEXT;",
             "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS time_zone VARCHAR(10) DEFAULT 'GMT';",
             "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS time_utc VARCHAR(20);",
+            "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS date_utc DATE;",
             "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS actual_status VARCHAR(20);",
             "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS source_scope VARCHAR(32) DEFAULT 'unknown';",
             "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;",
@@ -151,12 +153,12 @@ class DatabaseManager:
 
         query = """
             INSERT INTO Economic_Calendar_FF (
-                event_uid, date, time, time_zone, time_utc, currency, impact,
+                event_uid, date, date_utc, time, time_zone, time_utc, currency, impact,
                 event, actual, actual_status, forecast, previous, source_scope,
                 created_at, last_updated
             )
             VALUES (
-                %(event_uid)s, %(date)s, %(time)s, %(time_zone)s, %(time_utc)s,
+                %(event_uid)s, %(date)s, %(date_utc)s, %(time)s, %(time_zone)s, %(time_utc)s,
                 %(currency)s, %(impact)s, %(event)s, %(actual)s, %(actual_status)s,
                 %(forecast)s, %(previous)s, %(source_scope)s,
                 CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
@@ -169,6 +171,7 @@ class DatabaseManager:
                 source_scope = EXCLUDED.source_scope,
                 time_zone = EXCLUDED.time_zone,
                 time_utc = EXCLUDED.time_utc,
+                date_utc = EXCLUDED.date_utc,
                 last_updated = CURRENT_TIMESTAMP
             WHERE (
                 EXCLUDED.actual IS DISTINCT FROM Economic_Calendar_FF.actual OR

@@ -243,7 +243,7 @@ class ForexFactoryScraper:
         except ValueError:
             return None
 
-    def convert_to_utc(self, time_str, source_tz_offset):
+    def convert_to_utc(self, time_str, source_tz_offset, date_iso=None, return_date=False):
         """
         Convert time from source timezone to UTC
         Args:
@@ -253,14 +253,14 @@ class ForexFactoryScraper:
             utc_time_str: Time in UTC in 24-hour format (HH:MM)
         """
         if not time_str:
-            return time_str
+            return (time_str, date_iso) if return_date else time_str
 
         normalized = time_str.strip()
         lowered = normalized.lower()
 
         special_tokens = {'all day', 'tentative', 'day', 'off'}
         if lowered in special_tokens:
-            return time_str
+            return (time_str, date_iso) if return_date else time_str
 
         # Ignore session labels like "Day 1" or ranges like "19th-24th"
         non_clock_patterns = [
@@ -269,11 +269,12 @@ class ForexFactoryScraper:
         ]
         for pattern in non_clock_patterns:
             if re.match(pattern, lowered):
-                return time_str
+                return (time_str, date_iso) if return_date else time_str
+
+        parsed_time = None
 
         try:
             cleaned = lowered.replace(" ", "")
-            parsed_time = None
 
             if re.match(r'^\d{1,2}:\d{2}(am|pm)$', cleaned):
                 parsed_time = datetime.strptime(cleaned, "%I:%M%p")
@@ -283,14 +284,27 @@ class ForexFactoryScraper:
                 parsed_time = datetime.strptime(cleaned, "%I%p")
             else:
                 # Not a standard clock time, keep the original value
-                return time_str
+                return (time_str, date_iso) if return_date else time_str
 
             utc_time = parsed_time - timedelta(hours=source_tz_offset)
-            return utc_time.strftime("%H:%M")
+            utc_time_str = utc_time.strftime("%H:%M")
+
+            if return_date and date_iso and parsed_time:
+                try:
+                    base_date = datetime.strptime(date_iso, "%Y-%m-%d")
+                    local_dt = base_date.replace(hour=parsed_time.hour, minute=parsed_time.minute)
+                    utc_dt = local_dt - timedelta(hours=source_tz_offset)
+                    date_utc = utc_dt.strftime("%Y-%m-%d")
+                except Exception as inner_ex:
+                    logger.debug(f"Unable to convert '{time_str}' date context: {inner_ex}")
+                    date_utc = date_iso
+                return utc_time_str, date_utc
+
+            return utc_time_str if not return_date else (utc_time_str, date_iso)
 
         except Exception as e:
             logger.debug(f"Skipping UTC conversion for '{time_str}': {e}")
-            return time_str
+            return (time_str, date_iso) if return_date else time_str
 
     def extract_impact(self, impact_cell):
         """Extract impact from <td class="calendar__impact">"""
@@ -732,10 +746,16 @@ class ForexFactoryScraper:
                     if current_time:
                         last_time = current_time
 
-                    time_utc = self.convert_to_utc(current_time, utc_offset) if current_time else ""
-
                     # Convert date to ISO format (YYYY-MM-DD)
                     date_iso = self.parse_date_to_iso(current_date, period)
+                    time_utc = ""
+                    date_utc = date_iso
+                    if current_time:
+                        utc_result = self.convert_to_utc(current_time, utc_offset, date_iso=date_iso, return_date=True)
+                        if isinstance(utc_result, tuple):
+                            time_utc, date_utc = utc_result
+                        else:
+                            time_utc = utc_result
                     event_uid = self.generate_event_uid(date_iso, currency, event_title)
 
                     event = {
@@ -744,6 +764,7 @@ class ForexFactoryScraper:
                         'time': current_time,
                         'time_zone': detected_tz,
                         'time_utc': time_utc,
+                        'date_utc': date_utc,
                         'currency': currency,
                         'impact': impact,
                         'event': event_title,
