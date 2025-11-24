@@ -644,6 +644,18 @@ class ForexFactoryScraper:
             try:
                 driver = uc.Chrome(options=options, version_main=None, use_subprocess=False)
                 logger.info("Chrome driver created successfully")
+
+                # Force Chrome to report UTC timezone to JavaScript
+                # This makes ForexFactory display times in UTC, eliminating conversion errors
+                try:
+                    driver.execute_cdp_cmd("Emulation.setTimezoneOverride", {
+                        "timezoneId": "UTC"
+                    })
+                    logger.info("Chrome timezone forced to UTC via CDP")
+                except Exception as tz_error:
+                    logger.warning(f"Could not force UTC timezone via CDP: {tz_error}")
+                    logger.warning("Falling back to timezone detection and conversion")
+
                 return driver
             except Exception as e:
                 logger.warning(f"Attempt {attempt + 1}/{max_retries} failed: {e}")
