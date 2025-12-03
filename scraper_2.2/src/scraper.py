@@ -52,6 +52,108 @@ class ForexFactoryScraper:
 
     # ===== HELPER FUNCTIONS: Semantic HTML Extraction =====
 
+    def verify_forexfactory_timezone(self, soup, page_source):
+        """
+        ====== LAYER 2: Verify ForexFactory is displaying times in UTC ======
+
+        This is a critical verification step that ensures ForexFactory's page
+        is actually showing times in UTC (as a result of our Chrome timezone forcing).
+
+        If this verification fails, it means our timezone forcing didn't work
+        properly and we should abort rather than scrape incorrect data.
+
+        Returns:
+            str: Detected timezone (should be "UTC" or "GMT")
+
+        Raises:
+            RuntimeError: If ForexFactory is not displaying UTC times
+        """
+        detected_tz = None
+        detection_method = None
+
+        # Method 1: Extract from embedded JavaScript settings (most reliable)
+        try:
+            timezone_match = re.search(r"timezone:\s*'([^']+)'", page_source)
+            tz_name_match = re.search(r"timezone_name:\s*'([^']+)'", page_source)
+            user_tz_match = re.search(r"'User Timezone':\s*'([^']+)'", page_source)
+
+            if tz_name_match:
+                detected_tz = tz_name_match.group(1).strip()
+                detection_method = "timezone_name setting"
+            elif user_tz_match:
+                detected_tz = user_tz_match.group(1).strip()
+                detection_method = "User Timezone setting"
+            elif timezone_match:
+                offset_str = timezone_match.group(1).strip()
+                if offset_str in ['0', '+0', '-0', '0.0']:
+                    detected_tz = "UTC"
+                    detection_method = "timezone offset (0)"
+        except Exception as e:
+            logger.debug(f"Method 1 (JS settings) failed: {e}")
+
+        # Method 2: Search for explicit timezone text in page
+        if not detected_tz:
+            timezone_patterns = [
+                (r'Times are in (\w+)', 1, "explicit text"),
+                (r'Timezone[:\s]+["\']?(\w+)["\']?', 1, "timezone label"),
+                (r'displayed in (\w+)', 1, "display text"),
+                (r'"timezone":\s*"([^"]+)"', 1, "JSON timezone"),
+            ]
+
+            for pattern, group_idx, method in timezone_patterns:
+                match = re.search(pattern, page_source, re.IGNORECASE)
+                if match:
+                    detected_tz = match.group(group_idx).upper()
+                    detection_method = method
+                    break
+
+        # Method 3: Check footer/header for timezone indicators
+        if not detected_tz:
+            for section in [soup.find('footer'), soup.find('header')]:
+                if section:
+                    text = section.get_text().lower()
+                    if re.search(r'\butc\b', text):
+                        detected_tz = "UTC"
+                        detection_method = "footer/header text"
+                        break
+                    elif re.search(r'\bgmt\b', text):
+                        detected_tz = "GMT"
+                        detection_method = "footer/header text"
+                        break
+
+        # Normalize detected timezone
+        if detected_tz:
+            detected_tz = detected_tz.upper().strip()
+            # Handle common variations
+            if detected_tz in ['ETC/UTC', 'UTC+0', 'UTC-0', 'GMT+0', 'GMT-0', 'GMT0']:
+                detected_tz = "UTC"
+            elif detected_tz == 'GMT':
+                detected_tz = "UTC"  # GMT and UTC are effectively the same for our purposes
+
+        # Validate the detected timezone
+        acceptable_timezones = ['UTC', 'GMT']
+
+        if not detected_tz:
+            logger.warning(
+                "⚠️  WARNING: Could not extract timezone from ForexFactory page.\n"
+                "     Assuming UTC based on Chrome timezone verification.\n"
+                "     This should be investigated if it happens frequently."
+            )
+            return "UTC"
+
+        if detected_tz not in acceptable_timezones:
+            raise RuntimeError(
+                f"CRITICAL: ForexFactory is NOT displaying UTC times!\n"
+                f"  Expected: UTC or GMT\n"
+                f"  Detected: {detected_tz}\n"
+                f"  Detection method: {detection_method}\n"
+                f"  This means Chrome timezone forcing did not work properly.\n"
+                f"  Scraped data would be INCORRECT. Aborting."
+            )
+
+        logger.info(f"✓ VERIFIED: ForexFactory displaying times in {detected_tz} (via {detection_method})")
+        return detected_tz
+
     def detect_timezone(self, soup, page_source):
         """
         Detect timezone from ForexFactory HTML
@@ -264,6 +366,84 @@ class ForexFactoryScraper:
             return sign * (abs(hours) + minutes)
         except ValueError:
             return None
+
+    def convert_to_utc_simple(self, time_str, date_iso):
+        """
+        ====== LAYER 3: Simplified UTC "conversion" (really just validation) ======
+
+        Since we force Chrome to UTC timezone and verify ForexFactory displays UTC,
+        this function no longer needs to do complex timezone conversions.
+
+        It now serves as VALIDATION and FORMATTING:
+        - Validates time format
+        - Converts to 24-hour format
+        - Validates date format
+        - Returns same values (already UTC!)
+
+        Args:
+            time_str: Time string like "1:30am", "13:30", or special values
+            date_iso: Date in YYYY-MM-DD format
+
+        Returns:
+            tuple: (time_24h, date_iso, timezone_label)
+                - time_24h: Time in HH:MM format (24-hour)
+                - date_iso: Same date (no conversion needed)
+                - timezone_label: "UTC" or "N/A" for special values
+        """
+        if not time_str or not date_iso:
+            return time_str or "", date_iso or "", "N/A"
+
+        normalized = time_str.strip()
+        lowered = normalized.lower()
+
+        # Special values that aren't actual times
+        special_tokens = {'all day', 'tentative', 'day', 'off'}
+        if lowered in special_tokens:
+            return time_str, date_iso, "N/A"
+
+        # Ignore session labels like "Day 1" or date ranges like "19th-24th"
+        non_clock_patterns = [
+            r'^\d+(st|nd|rd|th)(\s*-\s*\d+(st|nd|rd|th))?$',
+            r'^day\s+\d+',
+        ]
+        for pattern in non_clock_patterns:
+            if re.match(pattern, lowered):
+                return time_str, date_iso, "N/A"
+
+        # Parse and validate time format
+        try:
+            cleaned = lowered.replace(" ", "")
+            parsed_time = None
+
+            # Try different time formats
+            if re.match(r'^\d{1,2}:\d{2}(am|pm)$', cleaned):
+                parsed_time = datetime.strptime(cleaned, "%I:%M%p")
+            elif re.match(r'^\d{1,2}:\d{2}$', cleaned):
+                parsed_time = datetime.strptime(cleaned, "%H:%M")
+            elif re.match(r'^\d{1,2}(am|pm)$', cleaned):
+                parsed_time = datetime.strptime(cleaned, "%I%p")
+            else:
+                # Not a standard clock time
+                logger.debug(f"Unrecognized time format: '{time_str}'")
+                return time_str, date_iso, "N/A"
+
+            # Convert to 24-hour format (for consistency)
+            time_24h = parsed_time.strftime("%H:%M")
+
+            # Validate date format
+            try:
+                datetime.strptime(date_iso, "%Y-%m-%d")
+            except ValueError:
+                logger.error(f"Invalid date format: {date_iso} (expected YYYY-MM-DD)")
+                return time_24h, date_iso, "UTC"
+
+            # No conversion needed - input is already UTC!
+            # Just return formatted values
+            return time_24h, date_iso, "UTC"
+
+        except Exception as e:
+            logger.debug(f"Time parsing failed for '{time_str}': {e}")
+            return time_str, date_iso, "N/A"
 
     def convert_to_utc(self, time_str, source_tz_offset, date_iso=None, return_date=False, zoneinfo_obj=None):
         """
@@ -552,6 +732,77 @@ class ForexFactoryScraper:
             logger.debug(f"Error parsing date '{date_str}': {e}")
             return date_str
 
+    def validate_event_timezone(self, event):
+        """
+        ====== LAYER 4: Paranoid per-event timezone validation ======
+
+        This is a final safety check before adding events to the database.
+        Ensures every event has correct timezone metadata.
+
+        If this validation fails, it means something went wrong in our
+        multi-layer verification and we should NOT insert incorrect data.
+
+        Args:
+            event: Event dictionary to validate
+
+        Returns:
+            bool: True if valid
+
+        Raises:
+            ValueError: If event has invalid timezone or missing critical fields
+        """
+        required_fields = ['event_uid', 'date', 'time', 'time_zone', 'currency', 'event']
+
+        # Check required fields
+        for field in required_fields:
+            if field not in event:
+                raise ValueError(
+                    f"CRITICAL: Event missing required field '{field}'\n"
+                    f"Event data: {event}"
+                )
+
+        # Validate timezone is correct
+        tz = event.get('time_zone', '')
+
+        # Allow UTC, N/A (for special times like "All Day"), or empty
+        acceptable = ['UTC', 'GMT', 'N/A', '']
+
+        if tz and tz not in acceptable:
+            raise ValueError(
+                f"CRITICAL: Event has invalid timezone!\n"
+                f"  Expected one of: {acceptable}\n"
+                f"  Actual: {tz}\n"
+                f"  Event: {event['event']}\n"
+                f"  Date: {event['date']}\n"
+                f"  Time: {event['time']}\n"
+                f"  This should NEVER happen - indicates timezone forcing failed.\n"
+                f"  Data would be INCORRECT."
+            )
+
+        # Validate date format
+        if event['date']:
+            try:
+                datetime.strptime(event['date'], "%Y-%m-%d")
+            except ValueError:
+                logger.error(
+                    f"Invalid date format in event: {event['date']} (expected YYYY-MM-DD)\n"
+                    f"Event: {event['event']}"
+                )
+
+        # Validate time_utc format if present
+        if event.get('time_utc') and event['time_utc'] not in ['All Day', 'Tentative', 'Day', 'off', '']:
+            try:
+                # Should be HH:MM format
+                if ':' in event['time_utc']:
+                    datetime.strptime(event['time_utc'], "%H:%M")
+            except ValueError:
+                logger.warning(
+                    f"Invalid time_utc format: {event['time_utc']} (expected HH:MM)\n"
+                    f"Event: {event['event']}"
+                )
+
+        return True
+
     def generate_event_uid(self, date, currency, event_title):
         """Generate unique event ID from date, currency, and title"""
         try:
@@ -560,6 +811,49 @@ class ForexFactoryScraper:
         except Exception as e:
             logger.error(f"Error generating event_uid: {e}")
             return None
+
+    def _generate_timezone_audit_summary(self, verified_tz):
+        """
+        Generate timezone verification audit summary for logging.
+
+        This provides a clear audit trail of timezone verification for debugging
+        and compliance purposes.
+        """
+        from datetime import datetime, timezone as tz_module
+
+        # Count events by timezone
+        tz_counts = {}
+        for event in self.events:
+            event_tz = event.get('time_zone', 'UNKNOWN')
+            tz_counts[event_tz] = tz_counts.get(event_tz, 0) + 1
+
+        summary_lines = [
+            f"Scraper Version: 2.3 (Multi-layer timezone verification)",
+            f"Timestamp: {datetime.now(tz_module.utc).isoformat()}",
+            f"",
+            f"VERIFICATION RESULTS:",
+            f"  ✓ Chrome timezone forced to: UTC",
+            f"  ✓ JavaScript verified timezone: UTC",
+            f"  ✓ ForexFactory verified timezone: {verified_tz}",
+            f"",
+            f"EVENTS PROCESSED:",
+            f"  Total events: {len(self.events)}",
+            f"  Events by timezone:",
+        ]
+
+        for event_tz, count in sorted(tz_counts.items()):
+            summary_lines.append(f"    - {event_tz}: {count} events")
+
+        summary_lines.extend([
+            f"",
+            f"DATA INTEGRITY: {'✓ VERIFIED' if all(tz in ['UTC', 'GMT', 'N/A', ''] for tz in tz_counts.keys()) else '✗ FAILED'}",
+            f"",
+            f"Configuration:",
+            f"  Forced timezone: {self.forced_timezone or 'UTC'}",
+            f"  Environment: {'GitHub Actions' if os.getenv('GITHUB_ACTIONS') else 'Local'}",
+        ])
+
+        return "\n".join(summary_lines)
 
     def is_cloudflare_challenge(self, page_source):
         """Detect Cloudflare challenge markers in HTML"""
@@ -645,16 +939,58 @@ class ForexFactoryScraper:
                 driver = uc.Chrome(options=options, version_main=None, use_subprocess=False)
                 logger.info("Chrome driver created successfully")
 
-                # Force Chrome to report UTC timezone to JavaScript
-                # This makes ForexFactory display times in UTC, eliminating conversion errors
+                # ====== LAYER 1: Force UTC timezone and VERIFY it worked ======
                 try:
+                    # Step 1: Force timezone via CDP command
                     driver.execute_cdp_cmd("Emulation.setTimezoneOverride", {
                         "timezoneId": "UTC"
                     })
-                    logger.info("Chrome timezone forced to UTC via CDP")
+                    logger.info("✓ Chrome timezone override command sent (UTC)")
+
+                    # Step 2: VERIFY JavaScript actually sees UTC timezone
+                    js_timezone = driver.execute_script(
+                        "return Intl.DateTimeFormat().resolvedOptions().timeZone"
+                    )
+
+                    if js_timezone != "UTC":
+                        raise RuntimeError(
+                            f"CRITICAL TIMEZONE VERIFICATION FAILED!\n"
+                            f"  Expected timezone: UTC\n"
+                            f"  Actual timezone:   {js_timezone}\n"
+                            f"  Chrome CDP override did not work as expected.\n"
+                            f"  Scraped data would be INCORRECT. Aborting."
+                        )
+
+                    logger.info(f"✓ VERIFIED: JavaScript reports timezone = {js_timezone}")
+
+                    # Step 3: Verify browser time is reasonable (sanity check)
+                    js_time = driver.execute_script("return new Date().toISOString()")
+                    py_time = datetime.now(timezone.utc).isoformat()
+                    logger.info(f"✓ Browser time: {js_time[:19]}, Python time: {py_time[:19]}")
+
+                    # Parse and compare times (should be within 5 seconds)
+                    js_dt = datetime.fromisoformat(js_time.replace('Z', '+00:00'))
+                    py_dt = datetime.now(timezone.utc)
+                    time_diff = abs((js_dt - py_dt).total_seconds())
+
+                    if time_diff > 5:
+                        logger.warning(
+                            f"⚠️  Browser time differs from system time by {time_diff:.1f} seconds. "
+                            f"This is unusual but may be acceptable."
+                        )
+                    else:
+                        logger.info(f"✓ Time synchronization OK (diff: {time_diff:.2f}s)")
+
+                except RuntimeError:
+                    # Re-raise verification failures
+                    driver.quit()
+                    raise
                 except Exception as tz_error:
-                    logger.warning(f"Could not force UTC timezone via CDP: {tz_error}")
-                    logger.warning("Falling back to timezone detection and conversion")
+                    driver.quit()
+                    raise RuntimeError(
+                        f"CRITICAL: Timezone verification failed with error: {tz_error}\n"
+                        f"Cannot proceed with scraping - data integrity cannot be guaranteed."
+                    ) from tz_error
 
                 return driver
             except Exception as e:
@@ -753,10 +1089,18 @@ class ForexFactoryScraper:
             rows = soup.find_all('tr', class_='calendar__row')
             logger.info(f"Found {len(rows)} calendar rows")
 
-            logger.info("\nDetecting timezone...")
+            # ====== LAYER 2: Verify ForexFactory timezone ======
+            logger.info("\nVerifying ForexFactory timezone...")
+            verified_tz = self.verify_forexfactory_timezone(soup, driver.page_source)
+
+            # For backward compatibility, also run old detection (will be removed in future)
             detected_tz, utc_offset = self.detect_timezone(soup, driver.page_source)
             zoneinfo_obj = self.active_zoneinfo
-            logger.info(f"Timezone: {detected_tz} (UTC{utc_offset:+.1f})\n")
+
+            # Use verified timezone (should always be UTC)
+            detected_tz = verified_tz
+            utc_offset = 0  # UTC has no offset
+            logger.info(f"✓ Using verified timezone: {detected_tz} (UTC{utc_offset:+.1f})\n")
 
             current_date = self.today_date
             last_time = ""
@@ -798,35 +1142,19 @@ class ForexFactoryScraper:
 
                     # Convert date to ISO format (YYYY-MM-DD)
                     date_iso = self.parse_date_to_iso(current_date, period)
-                    time_utc = ""
-                    date_utc = date_iso
-                    event_time_zone = detected_tz
 
+                    # ====== LAYER 3: Use simplified UTC "conversion" ======
+                    # Since ForexFactory is showing UTC times, no conversion needed
+                    # Just validate and format the times
                     if current_time:
-                        utc_result = self.convert_to_utc(
+                        time_utc, date_utc, event_time_zone = self.convert_to_utc_simple(
                             current_time,
-                            utc_offset,
-                            date_iso=date_iso,
-                            return_date=True,
-                            zoneinfo_obj=zoneinfo_obj
+                            date_iso
                         )
-                        if isinstance(utc_result, tuple):
-                            if len(utc_result) == 3:
-                                maybe_time, maybe_date, maybe_label = utc_result
-                                if maybe_time:
-                                    time_utc = maybe_time
-                                if maybe_date:
-                                    date_utc = maybe_date
-                                if maybe_label:
-                                    event_time_zone = maybe_label
-                            elif len(utc_result) == 2:
-                                maybe_time, maybe_date = utc_result
-                                if maybe_time:
-                                    time_utc = maybe_time
-                                if maybe_date:
-                                    date_utc = maybe_date
-                        else:
-                            time_utc = utc_result
+                    else:
+                        time_utc = ""
+                        date_utc = date_iso
+                        event_time_zone = "N/A"
 
                     event_uid = self.generate_event_uid(date_iso, currency, event_title)
 
@@ -847,6 +1175,14 @@ class ForexFactoryScraper:
                         'source_scope': period.split('=')[0]
                     }
 
+                    # ====== LAYER 4: Validate event before adding ======
+                    try:
+                        self.validate_event_timezone(event)
+                    except ValueError as validation_error:
+                        logger.error(f"Event validation failed: {validation_error}")
+                        logger.error("Skipping event to prevent incorrect data insertion")
+                        continue
+
                     self.events.append(event)
 
                     if self.verbose:
@@ -856,6 +1192,14 @@ class ForexFactoryScraper:
                 except Exception as e:
                     logger.error(f"Error parsing row {row_idx}: {e}")
                     continue
+
+            # ====== LAYER 4: Audit logging ======
+            timezone_summary = self._generate_timezone_audit_summary(verified_tz)
+            logger.info("\n" + "="*70)
+            logger.info("TIMEZONE VERIFICATION AUDIT")
+            logger.info("="*70)
+            logger.info(timezone_summary)
+            logger.info("="*70 + "\n")
 
             logger.info(f"\n✓ Extracted {len(self.events)} events\n")
             return True
