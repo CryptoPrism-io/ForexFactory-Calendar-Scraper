@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 """
 ForexFactory Calendar Scraper - Semantic Structure-Aware Version
 Scrapes ForexFactory calendar for different periods (today, week, month)
@@ -6,11 +8,12 @@ Uses CSS selectors to read HTML semantic structure, not text guessing
 Supports URL parameter: ?day=today, ?week=this, ?month=last|this|next
 """
 
-import os
-import time
-import re
-import hashlib
+import argparse
+import json
 import logging
+import os
+import re
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -1528,3 +1531,51 @@ class ForexFactoryScraper:
     def clear_events(self):
         """Clear events list for next scrape"""
         self.events = []
+
+
+def _format_event_line(event: dict, mode: str) -> str:
+    if mode == "json":
+        return json.dumps(event, default=str, ensure_ascii=False)
+
+    return (
+        f"{event.get('date')} {event.get('time', ''):8} "
+        f"{event.get('time_utc', ''):6} UTC "
+        f"{event.get('currency', ''):5} {event.get('impact', ''):5} "
+        f"{event.get('event', '')}"
+    )
+
+
+def _print_events(events: list[dict], mode: str, limit: int | None) -> None:
+    printed = 0
+    for event in events:
+        if limit is not None and printed >= limit:
+            break
+        print(_format_event_line(event, mode))
+        printed += 1
+    if printed == 0:
+        print("No events were collected for the requested period.")
+
+
+def _run_simple_fetch() -> int:
+    parser = argparse.ArgumentParser(description="Simple ForexFactory fetch helper")
+    parser.add_argument("--period", default="week=this", help="Calendar period to scrape")
+    parser.add_argument("--format", choices=("text", "json"), default="text")
+    parser.add_argument("--limit", type=int, help="Maximum events to display")
+    args = parser.parse_args()
+
+    scraper = ForexFactoryScraper(verbose=False)
+    if not scraper.scrape_period(args.period):
+        print("Scraper failed to populate events.", file=sys.stderr)
+        return 1
+
+    events = scraper.get_events()
+    print()
+    print("=" * 60)
+    print(f"Fetched {len(events)} events for period '{args.period}'")
+    print("=" * 60)
+    _print_events(events, args.format, args.limit)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(_run_simple_fetch())

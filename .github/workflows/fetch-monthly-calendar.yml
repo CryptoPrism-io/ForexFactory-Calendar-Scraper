@@ -1,0 +1,59 @@
+name: Fetch ForexFactory Monthly Calendar
+
+on:
+  workflow_dispatch:
+    inputs:
+      period:
+        description: "Calendar period to fetch (month=last, month=this, month=next)"
+        required: false
+        default: "month=this"
+      format:
+        description: "Output format for events"
+        required: false
+        default: "text"
+        type: choice
+        options:
+          - text
+          - json
+      limit:
+        description: "Maximum number of events to log"
+        required: false
+        default: ""
+
+jobs:
+  fetch-monthly:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r scraper_2.2/requirements.txt
+
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget gnupg
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Fetch monthly calendar
+        env:
+          PERIOD: ${{ github.event.inputs.period || 'month=this' }}
+          FORMAT: ${{ github.event.inputs.format || 'text' }}
+          LIMIT: ${{ github.event.inputs.limit || '' }}
+        run: |
+          PYTHONUTF8=1 xvfb-run -a --server-args="-screen 0 1920x1080x24" \
+            python scraper_2.2/scripts/fetch_monthly_calendar.py \
+              --period "$PERIOD" \
+              --format "$FORMAT" \
+              $(if [ -n "$LIMIT" ]; then echo "--limit $LIMIT"; fi)
