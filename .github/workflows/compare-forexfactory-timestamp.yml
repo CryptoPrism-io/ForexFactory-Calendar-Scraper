@@ -30,4 +30,4 @@ jobs:
 
       - name: Compare ForexFactory timestamp
         run: |
-          PYTHONUTF8=1 python scripts/compare_forexfactory_timestamp.py
+          PYTHONUTF8=1 python scraper_2.2/scripts/compare_forexfactory_timestamp.py
