@@ -68,8 +68,12 @@ class DatabaseManager:
             "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS date_utc DATE;",
             "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS actual_status VARCHAR(20);",
             "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS source_scope VARCHAR(32) DEFAULT 'unknown';",
+            "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS source_timezone VARCHAR(50);",
+            "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS datetime_utc TIMESTAMPTZ;",
             "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;",
             "ALTER TABLE economic_calendar_ff ADD COLUMN IF NOT EXISTS last_updated TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;",
+            "COMMENT ON COLUMN economic_calendar_ff.source_timezone IS 'ForexFactory display timezone (e.g., Asia/Kolkata)';",
+            "COMMENT ON COLUMN economic_calendar_ff.datetime_utc IS 'Event date and time in UTC (combined timestamp)';",
             """
             CREATE TABLE IF NOT EXISTS sync_log (
                 id SERIAL PRIMARY KEY,
@@ -96,6 +100,10 @@ class DatabaseManager:
             """
             CREATE INDEX IF NOT EXISTS idx_economic_calendar_ff_source_scope
             ON economic_calendar_ff(source_scope);
+            """,
+            """
+            CREATE INDEX IF NOT EXISTS idx_economic_calendar_ff_datetime_utc
+            ON economic_calendar_ff(datetime_utc);
             """
         ]
 
@@ -153,14 +161,14 @@ class DatabaseManager:
 
         query = """
             INSERT INTO Economic_Calendar_FF (
-                event_uid, date, date_utc, time, time_zone, time_utc, currency, impact,
-                event, actual, actual_status, forecast, previous, source_scope,
-                created_at, last_updated
+                event_uid, date, date_utc, time, time_zone, time_utc, datetime_utc, source_timezone,
+                currency, impact, event, actual, actual_status, forecast, previous,
+                source_scope, created_at, last_updated
             )
             VALUES (
                 %(event_uid)s, %(date)s, %(date_utc)s, %(time)s, %(time_zone)s, %(time_utc)s,
-                %(currency)s, %(impact)s, %(event)s, %(actual)s, %(actual_status)s,
-                %(forecast)s, %(previous)s, %(source_scope)s,
+                %(datetime_utc)s, %(source_timezone)s, %(currency)s, %(impact)s, %(event)s, %(actual)s,
+                %(actual_status)s, %(forecast)s, %(previous)s, %(source_scope)s,
                 CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
             )
             ON CONFLICT (event_uid) DO UPDATE SET
@@ -172,6 +180,8 @@ class DatabaseManager:
                 time_zone = EXCLUDED.time_zone,
                 time_utc = EXCLUDED.time_utc,
                 date_utc = EXCLUDED.date_utc,
+                datetime_utc = EXCLUDED.datetime_utc,
+                source_timezone = EXCLUDED.source_timezone,
                 last_updated = CURRENT_TIMESTAMP
         """
 
