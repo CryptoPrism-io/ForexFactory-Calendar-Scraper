@@ -80,6 +80,7 @@ class DatabaseManager:
                 job_name VARCHAR(64),
                 job_type VARCHAR(32),
                 run_id VARCHAR(64),
+                status VARCHAR(20) DEFAULT 'running',
                 start_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
                 end_time TIMESTAMPTZ,
                 processed INTEGER DEFAULT 0,
@@ -89,6 +90,7 @@ class DatabaseManager:
                 error_message TEXT
             );
             """,
+            "ALTER TABLE sync_log ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'running';",
             """
             CREATE UNIQUE INDEX IF NOT EXISTS idx_economic_calendar_ff_event_uid_unique
             ON economic_calendar_ff(event_uid);
