@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f scraper_2.2/requirements.txt ]; then pip install -r scraper_2.2/requirements.txt; fi
 
       - name: Compare ForexFactory timestamp
         run: |
