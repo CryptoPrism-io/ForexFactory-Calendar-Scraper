@@ -27,6 +27,9 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+# Regex pattern to validate HH:MM time format
+TIME_PATTERN = re.compile(r'^\d{1,2}:\d{2}$')
+
 
 class ForexFactoryScraper:
     """Modular ForexFactory Calendar Scraper supporting multiple periods"""
@@ -1449,12 +1452,15 @@ class ForexFactoryScraper:
 
                     # Combine date_utc + time_utc into a proper TIMESTAMPTZ
                     datetime_utc = None
-                    # Check if time_utc is a valid time (not special values like "All Day", "Day 1", etc.)
-                    if time_utc and time_utc not in ['All Day', 'Tentative'] and not time_utc.startswith('Day '):
-                        # Format: "YYYY-MM-DD HH:MM:SS"
+                    # Validate time_utc format using regex - only use if it matches HH:MM pattern
+                    if time_utc and TIME_PATTERN.match(time_utc):
+                        # Valid time format (e.g., "14:30", "9:00")
                         datetime_utc = f"{date_utc} {time_utc}:00"
                     elif date_utc:
-                        # For special values (All Day, Tentative, Day N), set to midnight UTC
+                        # Special/invalid time values (All Day, Tentative, Day N, Sep 27th, etc.) → midnight UTC
+                        if time_utc and time_utc not in ['All Day', 'Tentative'] and not time_utc.startswith('Day '):
+                            # Log unexpected time formats for monitoring
+                            logger.debug(f"Non-standard time value '{time_utc}' for event '{event_title}' → using midnight UTC")
                         datetime_utc = f"{date_utc} 00:00:00"
 
                     event = {
