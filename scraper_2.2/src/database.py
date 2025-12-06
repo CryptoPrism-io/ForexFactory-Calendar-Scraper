@@ -86,11 +86,17 @@ class DatabaseManager:
                 processed INTEGER DEFAULT 0,
                 inserted INTEGER DEFAULT 0,
                 updated INTEGER DEFAULT 0,
+                events_processed INTEGER DEFAULT 0,
+                events_added INTEGER DEFAULT 0,
+                events_updated INTEGER DEFAULT 0,
                 errors INTEGER DEFAULT 0,
                 error_message TEXT
             );
             """,
             "ALTER TABLE sync_log ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'running';",
+            "ALTER TABLE sync_log ADD COLUMN IF NOT EXISTS events_processed INTEGER DEFAULT 0;",
+            "ALTER TABLE sync_log ADD COLUMN IF NOT EXISTS events_added INTEGER DEFAULT 0;",
+            "ALTER TABLE sync_log ADD COLUMN IF NOT EXISTS events_updated INTEGER DEFAULT 0;",
             """
             CREATE UNIQUE INDEX IF NOT EXISTS idx_economic_calendar_ff_event_uid_unique
             ON economic_calendar_ff(event_uid);

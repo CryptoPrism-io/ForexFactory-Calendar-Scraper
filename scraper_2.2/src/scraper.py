@@ -1449,11 +1449,12 @@ class ForexFactoryScraper:
 
                     # Combine date_utc + time_utc into a proper TIMESTAMPTZ
                     datetime_utc = None
-                    if time_utc and time_utc not in ['All Day', 'Tentative', 'Day 1', 'Day 2', 'Day 3']:
+                    # Check if time_utc is a valid time (not special values like "All Day", "Day 1", etc.)
+                    if time_utc and time_utc not in ['All Day', 'Tentative'] and not time_utc.startswith('Day '):
                         # Format: "YYYY-MM-DD HH:MM:SS"
                         datetime_utc = f"{date_utc} {time_utc}:00"
                     elif date_utc:
-                        # For special values, set to midnight UTC
+                        # For special values (All Day, Tentative, Day N), set to midnight UTC
                         datetime_utc = f"{date_utc} 00:00:00"
 
                     event = {
