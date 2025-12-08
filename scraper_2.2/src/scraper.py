@@ -9,6 +9,7 @@ Supports URL parameter: ?day=today, ?week=this, ?month=last|this|next
 """
 
 import argparse
+import hashlib
 import json
 import logging
 import os
