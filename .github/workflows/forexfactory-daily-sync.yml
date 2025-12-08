@@ -24,7 +24,6 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           SCRAPER_VERBOSE: 'false'
           SCRAPER_TIMEOUT: '60'
-          SCRAPER_FORCE_TIMEZONE: 'UTC'
           OUTPUT_MODE: 'both'
           IMAGE_NAME: ghcr.io/${{ github.repository }}/forexfactory-scraper:latest
         run: |
@@ -36,7 +35,6 @@ jobs:
             -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
             -e SCRAPER_VERBOSE="$SCRAPER_VERBOSE" \
             -e SCRAPER_TIMEOUT="$SCRAPER_TIMEOUT" \
-            -e SCRAPER_FORCE_TIMEZONE="$SCRAPER_FORCE_TIMEZONE" \
             -e OUTPUT_MODE="$OUTPUT_MODE" \
             -e GITHUB_ACTIONS="true" \
             $(echo "$IMAGE_NAME" | tr '[:upper:]' '[:lower:]') \
