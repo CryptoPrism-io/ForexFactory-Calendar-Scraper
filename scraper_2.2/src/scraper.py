@@ -1275,7 +1275,9 @@ class ForexFactoryScraper:
                 options.add_argument("--disable-plugins")
                 options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
 
-                driver = uc.Chrome(options=options, version_main=142, use_subprocess=False)
+                # Let undetected_chromedriver auto-detect Chrome version
+                # Don't hardcode version_main - it causes mismatch with system Chromium
+                driver = uc.Chrome(options=options, use_subprocess=False)
                 logger.info("Chrome driver created successfully")
 
                 # Note: Chrome timezone forcing is no longer used
