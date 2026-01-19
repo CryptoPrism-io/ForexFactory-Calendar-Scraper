@@ -97,8 +97,9 @@ class DatabaseManager:
             "ALTER TABLE sync_log ADD COLUMN IF NOT EXISTS events_processed INTEGER DEFAULT 0;",
             "ALTER TABLE sync_log ADD COLUMN IF NOT EXISTS events_added INTEGER DEFAULT 0;",
             "ALTER TABLE sync_log ADD COLUMN IF NOT EXISTS events_updated INTEGER DEFAULT 0;",
+            # Non-unique index on event_uid for query performance (not unique to allow updates)
             """
-            CREATE UNIQUE INDEX IF NOT EXISTS idx_economic_calendar_ff_event_uid_unique
+            CREATE INDEX IF NOT EXISTS idx_economic_calendar_ff_event_uid
             ON economic_calendar_ff(event_uid);
             """,
             """
@@ -167,6 +168,8 @@ class DatabaseManager:
         updated = 0
         processed = 0
 
+        # UPSERT using (event, currency, date_utc) as the conflict target
+        # This matches the unique_event_currency_date constraint
         query = """
             INSERT INTO Economic_Calendar_FF (
                 event_uid, date, date_utc, time, time_zone, time_utc, datetime_utc, source_timezone,
@@ -179,15 +182,15 @@ class DatabaseManager:
                 %(actual_status)s, %(forecast)s, %(previous)s, %(source_scope)s,
                 CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
             )
-            ON CONFLICT (event_uid) DO UPDATE SET
-                actual = EXCLUDED.actual,
-                actual_status = EXCLUDED.actual_status,
-                forecast = EXCLUDED.forecast,
-                previous = EXCLUDED.previous,
+            ON CONFLICT (event, currency, date_utc) DO UPDATE SET
+                actual = COALESCE(EXCLUDED.actual, economic_calendar_ff.actual),
+                actual_status = COALESCE(EXCLUDED.actual_status, economic_calendar_ff.actual_status),
+                forecast = COALESCE(EXCLUDED.forecast, economic_calendar_ff.forecast),
+                previous = COALESCE(EXCLUDED.previous, economic_calendar_ff.previous),
+                event_uid = COALESCE(EXCLUDED.event_uid, economic_calendar_ff.event_uid),
                 source_scope = EXCLUDED.source_scope,
                 time_zone = EXCLUDED.time_zone,
                 time_utc = EXCLUDED.time_utc,
-                date_utc = EXCLUDED.date_utc,
                 datetime_utc = EXCLUDED.datetime_utc,
                 source_timezone = EXCLUDED.source_timezone,
                 last_updated = CURRENT_TIMESTAMP
