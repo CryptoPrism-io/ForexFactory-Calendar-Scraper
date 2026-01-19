@@ -1,0 +1,170 @@
+name: Deploy Scraper to Cloud Run Job
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'scraper_2.2/**'
+      - 'Dockerfile'
+      - '.github/workflows/deploy-cloud-run-job.yml'
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: social-data-pipeline-and-push
+  REGION: us-central1
+  JOB_NAME: forexfactory-scraper
+  ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
+  REPOSITORY: forex-scraper
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Authenticate to Google Cloud via Workload Identity Federation
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+          token_format: access_token
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      # Enable required APIs
+      - name: Enable APIs
+        run: |
+          gcloud services enable \
+            artifactregistry.googleapis.com \
+            run.googleapis.com \
+            cloudscheduler.googleapis.com \
+            --project=${{ env.PROJECT_ID }}
+
+      # Create Artifact Registry repository if it doesn't exist
+      - name: Create Artifact Registry Repository
+        run: |
+          gcloud artifacts repositories describe ${{ env.REPOSITORY }} \
+            --location=${{ env.REGION }} \
+            --project=${{ env.PROJECT_ID }} 2>/dev/null || \
+          gcloud artifacts repositories create ${{ env.REPOSITORY }} \
+            --repository-format=docker \
+            --location=${{ env.REGION }} \
+            --description="ForexFactory Scraper Images" \
+            --project=${{ env.PROJECT_ID }}
+
+      # Configure Docker for Artifact Registry
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
+
+      # Build and push Docker image
+      - name: Build and Push Docker Image
+        working-directory: scraper_2.2
+        run: |
+          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.JOB_NAME }}:${{ github.sha }}"
+          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.JOB_NAME }}:latest"
+
+          docker build -t $IMAGE_TAG -t $IMAGE_LATEST .
+          docker push $IMAGE_TAG
+          docker push $IMAGE_LATEST
+
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+      # Create or update Cloud Run Job
+      - name: Deploy Cloud Run Job
+        run: |
+          # Check if job exists
+          if gcloud run jobs describe ${{ env.JOB_NAME }} --region=${{ env.REGION }} --project=${{ env.PROJECT_ID }} 2>/dev/null; then
+            echo "Updating existing job..."
+            gcloud run jobs update ${{ env.JOB_NAME }} \
+              --image=${{ env.IMAGE_TAG }} \
+              --region=${{ env.REGION }} \
+              --project=${{ env.PROJECT_ID }} \
+              --set-env-vars="POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" \
+              --set-env-vars="POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" \
+              --set-env-vars="POSTGRES_DB=${{ secrets.POSTGRES_DB }}" \
+              --set-env-vars="POSTGRES_USER=${{ secrets.POSTGRES_USER }}" \
+              --set-env-vars="POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" \
+              --set-env-vars="OUTPUT_MODE=db" \
+              --set-env-vars="SCRAPER_VERBOSE=false" \
+              --memory=1Gi \
+              --cpu=1 \
+              --task-timeout=300s \
+              --max-retries=1
+          else
+            echo "Creating new job..."
+            gcloud run jobs create ${{ env.JOB_NAME }} \
+              --image=${{ env.IMAGE_TAG }} \
+              --region=${{ env.REGION }} \
+              --project=${{ env.PROJECT_ID }} \
+              --set-env-vars="POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" \
+              --set-env-vars="POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" \
+              --set-env-vars="POSTGRES_DB=${{ secrets.POSTGRES_DB }}" \
+              --set-env-vars="POSTGRES_USER=${{ secrets.POSTGRES_USER }}" \
+              --set-env-vars="POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" \
+              --set-env-vars="OUTPUT_MODE=db" \
+              --set-env-vars="SCRAPER_VERBOSE=false" \
+              --memory=1Gi \
+              --cpu=1 \
+              --task-timeout=300s \
+              --max-retries=1
+          fi
+
+      # Create or update Cloud Scheduler
+      - name: Setup Cloud Scheduler
+        run: |
+          SCHEDULER_NAME="${{ env.JOB_NAME }}-scheduler"
+          JOB_URI="https://${{ env.REGION }}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${{ env.PROJECT_ID }}/jobs/${{ env.JOB_NAME }}:run"
+
+          # Get the service account for Cloud Run invoker
+          SA_EMAIL="${{ secrets.WIF_SERVICE_ACCOUNT }}"
+
+          # Check if scheduler exists
+          if gcloud scheduler jobs describe $SCHEDULER_NAME --location=${{ env.REGION }} --project=${{ env.PROJECT_ID }} 2>/dev/null; then
+            echo "Updating existing scheduler..."
+            gcloud scheduler jobs update http $SCHEDULER_NAME \
+              --location=${{ env.REGION }} \
+              --project=${{ env.PROJECT_ID }} \
+              --schedule="*/3 * * * *" \
+              --time-zone="UTC" \
+              --uri="$JOB_URI" \
+              --http-method=POST \
+              --oauth-service-account-email="$SA_EMAIL"
+          else
+            echo "Creating new scheduler..."
+            gcloud scheduler jobs create http $SCHEDULER_NAME \
+              --location=${{ env.REGION }} \
+              --project=${{ env.PROJECT_ID }} \
+              --schedule="*/3 * * * *" \
+              --time-zone="UTC" \
+              --uri="$JOB_URI" \
+              --http-method=POST \
+              --oauth-service-account-email="$SA_EMAIL" \
+              --description="Triggers ForexFactory scraper every 3 minutes"
+          fi
+
+      - name: Verify Deployment
+        run: |
+          echo "=== Cloud Run Job ==="
+          gcloud run jobs describe ${{ env.JOB_NAME }} \
+            --region=${{ env.REGION }} \
+            --project=${{ env.PROJECT_ID }} \
+            --format="value(status.latestCreatedExecution.name)"
+
+          echo ""
+          echo "=== Cloud Scheduler ==="
+          gcloud scheduler jobs describe ${{ env.JOB_NAME }}-scheduler \
+            --location=${{ env.REGION }} \
+            --project=${{ env.PROJECT_ID }} \
+            --format="table(name,schedule,state)"
