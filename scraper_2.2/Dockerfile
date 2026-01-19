@@ -5,9 +5,9 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies (Chromium + Xvfb for virtual display + required libs)
+# NOTE: Do NOT install chromium-driver from apt - let undetected-chromedriver download the matching version
 RUN apt-get update && apt-get install -y --no-install-recommends \
     chromium \
-    chromium-driver \
     xvfb \
     x11-utils \
     ca-certificates \
@@ -17,7 +17,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     lsb-release \
     wget \
     xdg-utils \
+    curl \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
+
+# Set Chrome binary location for undetected-chromedriver
+ENV CHROME_BIN=/usr/bin/chromium
 
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
