@@ -1275,9 +1275,10 @@ class ForexFactoryScraper:
                 options.add_argument("--disable-plugins")
                 options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
 
-                # Let undetected_chromedriver auto-detect Chrome version
-                # Don't hardcode version_main - it causes mismatch with system Chromium
-                driver = uc.Chrome(options=options, use_subprocess=False)
+                # Pin ChromeDriver version to match system Chromium
+                # Debian's chromium package is at 144, but undetected-chromedriver
+                # auto-downloads latest ChromeDriver (145+) causing version mismatch
+                driver = uc.Chrome(options=options, use_subprocess=False, version_main=144)
                 logger.info("Chrome driver created successfully")
 
                 # Note: Chrome timezone forcing is no longer used

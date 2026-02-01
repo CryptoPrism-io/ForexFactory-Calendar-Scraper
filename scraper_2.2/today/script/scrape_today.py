@@ -309,7 +309,8 @@ class ForexFactoryTodayScraper:
         options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
 
         try:
-            driver = uc.Chrome(options=options, version_main=None)
+            # Pin to Chromium 144 (Debian's current version)
+            driver = uc.Chrome(options=options, version_main=144)
             print("✓ Chrome driver created")
             return driver
         except Exception as e:
